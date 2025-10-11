@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>POP自動生成｜A5固定・スマホ/タブレット対応（安定版）</title>
+  <title>POP自動生成｜A5固定・スマホ対応（安定版）</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Shippori+Mincho:wght@500;700&family=Kosugi+Maru&display=swap" rel="stylesheet">
+
+  <!-- ↓↓↓ 必ずこの <style> ブロックの中だけにCSSを置いてください ↓↓↓ -->
   <style>
     :root{ --accent:#c82020; --paper:#fff; --bg:#f6f7fb; --muted:#6b7280 }
     *{box-sizing:border-box}
@@ -24,42 +26,39 @@
     .grid{max-width:1160px;margin:0 auto;padding:14px;display:grid;grid-template-columns:1fr 420px;gap:16px}
     @media (max-width:980px){.grid{grid-template-columns:1fr}}
 
-    /* ===== キャンバス周り（右端切れ防止のため左右にクッション） ===== */
-   <style>
-  #stageWrap{
-    width:100%;
-    display:flex;
-    justify-content:center;
-    align-items:flex-start;
-    padding:0 8px;
-  }
-
-  /* ===== A5キャンバス：Safari/iPhone完全対応版 ===== */
-  .a5{
-    /* 幅を画面の9割に。mmではなくpxで指定 */
-    width: min(420px, 90vw);
-    height: auto;
-    background: var(--paper);
-    margin: 12px auto;
-    padding: 9mm;
-    border: 8px solid #d4af37;
-    box-shadow: 0 8px 20px rgba(0,0,0,.15);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    overflow: hidden;
-    max-width: -webkit-fill-available; /* ← iPhone Safari用 */
-  }
-
-  @media (max-width:480px){
-    .a5{
-      width: 94vw;   /* さらに小型端末に合わせる */
-      padding: 7mm;
-      border-width: 6px;
+    /* ===== キャンバス周り（右端切れ防止のクッション） ===== */
+    #stageWrap{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      padding:0 8px;
     }
-  }
-</style>
 
+    /* ===== A5 キャンバス（iPhone/Chrome/Safari 安定版） ===== */
+    .a5{
+      /* 画面幅に合わせて確実に縮小。mmは使わない */
+      width: min(420px, 90vw);
+      /* A5縦っぽい比率を維持：高さは自動 */
+      height: auto;
+
+      background: var(--paper);
+      margin: 12px auto;
+      padding: 9mm;
+      border: 8px solid #d4af37;
+      box-shadow: 0 8px 20px rgba(0,0,0,.15);
+
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      overflow: hidden;
+
+      max-width: -webkit-fill-available; /* iOS Chrome/Safari向け保険 */
+    }
+    /* さらに狭い端末向け微調整（SE等） */
+    @media (max-width:480px){
+      .a5{ width: 94vw; padding: 7mm; border-width: 6px; }
+    }
 
     .headline{text-align:center;font-size:20pt;font-weight:900;margin-bottom:5mm}
     .ribbon{border:3px solid #e11d48;color:#e11d48;font-weight:900;text-align:center;padding:6px 10px;border-radius:8px;display:inline-block;margin:auto}
@@ -91,7 +90,9 @@
     .full{grid-column:1/-1}
     .hint{font-size:12px;color:var(--muted)}
   </style>
+  <!-- ↑↑↑ 絶対に </style> を消さないでください ↑↑↑ -->
 </head>
+
 <body>
   <header>
     <div class="wrap">
@@ -224,7 +225,7 @@
     /* ===== テーマ/フォント ===== */
     function applyTheme(v){
       const frame = { lux:'#d4af37', cute:'#ff86b3', fresh:'#34d399' }[v] || '#d4af37';
-      $('#stage').style.border = '8px solid '+frame;   // 枠幅は .a5 に合わせて8px
+      $('#stage').style.border = '8px solid '+frame;
     }
     function applyFont(v){
       const fam = {
