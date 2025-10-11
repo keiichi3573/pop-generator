@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>POP自動生成｜A5固定・スマホ/タブレット対応（最終版）</title>
+  <title>POP自動生成｜A5固定・スマホ/タブレット対応（オートフィット版）</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Shippori+Mincho:wght@500;700&family=Kosugi+Maru&display=swap" rel="stylesheet">
   <style>
     :root{ --accent:#c82020; --paper:#fff; --bg:#f6f7fb; --muted:#6b7280 }
@@ -20,61 +20,36 @@
     .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
     select,input[type="text"],input[type="number"],textarea{padding:10px 12px;border:1px solid #e5e7eb;border-radius:10px;font-size:14px;background:#fff}
 
-    /* ===== レイアウト2カラム ===== */
+    /* ===== メイン2カラム ===== */
     .grid{max-width:1160px;margin:0 auto;padding:14px;display:grid;grid-template-columns:1fr 420px;gap:16px}
     @media (max-width:980px){.grid{grid-template-columns:1fr}}
 
-  /* ===== A5 キャンバス（iPhone完全フィット版） ===== */
-/* 既存の .a5 と @media (max-width:600px){ .a5{...} } は削除してこの塊に置き換え */
-.a5{
-  /* 横幅は「148mm」「端末幅の92%」「端末高さ90%に収まる幅」の最小値 */
-  width: min(148mm, 92vw, calc(90vh * 148 / 210));
-  /* A5縦の比率を厳守（歪み防止） */
-  aspect-ratio: 148 / 210;
-  height: auto;
-
-  background: var(--paper);
-  margin: 0 auto;
-  padding: 9mm;                 /* 余白を少し抑える */
-  border: 8px solid #d4af37;    /* 枠も少し細く */
-  box-shadow: 0 8px 20px rgba(0,0,0,.15);
-
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  overflow: hidden;             /* 枠からはみ出さないように */
-}
-
-/* iPhone等の狭い端末での微調整（横・縦ともに収める） */
-@media (max-width: 600px){
-  .headline{font-size: 18pt; margin-bottom: 4mm;}
-  .ribbon{padding:5px 8px; border-width:2px;}
-  .middle{gap:5mm; margin:6mm 0 5mm;}
-  .desc{font-size: 10.5pt; line-height: 1.7;}
-  .product{font-size: 16pt; margin-top:3mm;}
-  .before{font-size: 11pt; margin-bottom: 1.2mm;}
-  .discount{font-size: 20pt; margin-bottom: 1.2mm;}
-  .now{font-size: 16pt;}
-  .checklist{font-size:10pt; margin-top: 2mm;}
-
-  .a5{
-    padding: 7mm;              /* さらに余白を控えめに */
-    border-width: 6px;         /* 枠線も細め */
-    width: min(92vw, calc(88vh * 148 / 210));  /* 縦方向にさらに余裕をもたせる */
-  }
-}
-
-/* 画像のはみ出し保険 */
-.photo-box img{
-  max-width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-
-
-
+    /* ===== A5 キャンバス（実寸） + オートフィット仕組み ===== */
+    #stageWrap{width:100%;display:flex;justify-content:center;align-items:flex-start;overflow:visible}
+    .a5{
+      width:148mm;          /* 実寸A5 */
+      height:210mm;         /* 実寸A5 */
+      background:var(--paper);
+      margin:auto;
+      border:10px solid #d4af37;
+      box-shadow:0 8px 20px rgba(0,0,0,.15);
+      display:flex;flex-direction:column;justify-content:flex-start;
+      padding:10mm;overflow:hidden;
+      transform-origin: top center; /* オートフィット用の原点 */
+    }
+    /* オートフィット時の軽い縮小で視認性UP（小画面用タイポ微調整） */
+    @media (max-width:600px){
+      .headline{font-size:18pt;margin-bottom:4mm}
+      .ribbon{padding:5px 8px;border-width:2px}
+      .middle{gap:5mm;margin:6mm 0 5mm}
+      .desc{font-size:10.5pt;line-height:1.7}
+      .product{font-size:16pt;margin-top:3mm}
+      .before{font-size:11pt;margin-bottom:1.2mm}
+      .discount{font-size:20pt;margin-bottom:1.2mm}
+      .now{font-size:16pt}
+      .checklist{font-size:10pt;margin-top:2mm}
+      .a5{border-width:8px;padding:8mm}
+    }
 
     .headline{text-align:center;font-size:20pt;font-weight:900;margin-bottom:5mm}
     .ribbon{border:3px solid #e11d48;color:#e11d48;font-weight:900;text-align:center;padding:6px 10px;border-radius:8px;display:inline-block;margin:auto}
@@ -129,6 +104,7 @@
         <button class="btn" id="swap">写真⇄説明</button>
         <button class="btn" id="gen">① 候補を3つ生成</button>
         <button class="btn" id="apply">② 反映</button>
+        <button class="btn" id="fitToggle">全体表示：ON</button>
         <button class="btn" id="png">PNG保存</button>
         <button class="btn" id="pdf">A5でPDF保存</button>
         <button class="btn" id="pdfA4x2">A4で2面付けPDF</button>
@@ -139,35 +115,37 @@
   <main class="grid">
     <!-- プレビュー -->
     <section>
-      <div id="stage" class="a5">
-        <div class="headline" id="v_headline">キャッチコピーをここに表示</div>
-        <div class="ribbon" id="v_ribbon">おすすめポイントを入力してください</div>
+      <div id="stageWrap">
+        <div id="stage" class="a5">
+          <div class="headline" id="v_headline">キャッチコピーをここに表示</div>
+          <div class="ribbon" id="v_ribbon">おすすめポイントを入力してください</div>
 
-        <div id="middle" class="middle">
-          <label class="photo-box" title="クリックで写真を選択">
-            <input id="f_photo" type="file" accept="image/*" style="opacity:0;position:absolute;inset:0;cursor:pointer;">
-            <img id="photoImg" alt="" style="display:none"/>
-          </label>
-          <div class="desc">
-            <div id="v_descTitle" style="font-weight:900;font-size:14pt;margin-bottom:6px">説明タイトルがここに入ります</div>
-            <div id="v_desc">ここに説明文が入ります。生成ボタンで自動作成も可能です。</div>
+          <div id="middle" class="middle">
+            <label class="photo-box" title="クリックで写真を選択">
+              <input id="f_photo" type="file" accept="image/*" style="opacity:0;position:absolute;inset:0;cursor:pointer;">
+              <img id="photoImg" alt="" style="display:none"/>
+            </label>
+            <div class="desc">
+              <div id="v_descTitle" style="font-weight:900;font-size:14pt;margin-bottom:6px">説明タイトルがここに入ります</div>
+              <div id="v_desc">ここに説明文が入ります。生成ボタンで自動作成も可能です。</div>
+            </div>
           </div>
+
+          <div class="product" id="v_product">メニュー名・商品名がここに入ります</div>
+          <div class="price">
+            <div class="before" id="v_before"></div>
+            <div class="discount" id="v_discountLine"></div>
+            <div class="now" id="v_now"></div>
+          </div>
+
+          <ul class="checklist" id="v_checks">
+            <li>おすすめポイント1</li>
+            <li>おすすめポイント2</li>
+            <li>おすすめポイント3</li>
+          </ul>
+
+          <div class="cta"><div class="box">ご興味のある方はスタッフまで♪</div></div>
         </div>
-
-        <div class="product" id="v_product">メニュー名・商品名がここに入ります</div>
-        <div class="price">
-          <div class="before" id="v_before"></div>
-          <div class="discount" id="v_discountLine"></div>
-          <div class="now" id="v_now"></div>
-        </div>
-
-        <ul class="checklist" id="v_checks">
-          <li>おすすめポイント1</li>
-          <li>おすすめポイント2</li>
-          <li>おすすめポイント3</li>
-        </ul>
-
-        <div class="cta"><div class="box">ご興味のある方はスタッフまで♪</div></div>
       </div>
     </section>
 
@@ -238,6 +216,7 @@
     function applyTheme(v){
       const frame = { lux:'#d4af37', cute:'#ff86b3', fresh:'#34d399' }[v] || '#d4af37';
       $('#stage').style.border = '10px solid '+frame;
+      autoFit(); // 見た目が変わったら再計算
     }
     function applyFont(v){
       const fam = {
@@ -246,13 +225,17 @@
         hand:"'Kosugi Maru','Noto Sans JP',sans-serif"
       }[v];
       $('#stage').style.fontFamily = fam;
+      autoFit(); // フォント切替時も再計算
     }
     $('#theme').addEventListener('change', e=>applyTheme(e.target.value));
     $('#font').addEventListener('change',  e=>applyFont(e.target.value));
     applyTheme('lux'); applyFont('gothic');
 
     /* ===== 写真⇄説明の左右入替 ===== */
-    $('#swap').addEventListener('click', ()=> $('#middle').classList.toggle('reverse'));
+    $('#swap').addEventListener('click', ()=>{
+      $('#middle').classList.toggle('reverse');
+      autoFit();
+    });
 
     /* ===== 画像アップロード ===== */
     function handleImage(file){
@@ -261,6 +244,7 @@
       r.onload=e=>{
         $('#photoImg').src=e.target.result;
         $('#photoImg').style.display='block';
+        autoFit();
       };
       r.readAsDataURL(file);
     }
@@ -313,6 +297,8 @@
       $('#aiArea').dataset.desc  = JSON.stringify(cDesc);
       $('#aiArea').dataset.checks= JSON.stringify(cChecks);
       $('#f_headline').value = cCatch[0];
+
+      autoFit();
     }
 
     /* ===== 反映 ===== */
@@ -352,26 +338,73 @@
       $('#v_checks').innerHTML=list.map(t=>`<li>${t}</li>`).join('');
 
       document.getElementById('stage').scrollIntoView({behavior:'smooth',block:'start'});
+
+      autoFit();
     }
+
+    /* ===== A5を画面に自動フィット（実寸↔全体表示のトグル付） ===== */
+    let fitEnabled = true; // 初期：全体表示ON
+    function autoFit(){
+      const stage = $('#stage');
+      // まず実寸表示に戻す（scaleリセット）
+      stage.style.transform = 'scale(1)';
+
+      if(!fitEnabled) return; // 実寸モードなら終了
+
+      // ヘッダーの高さを差し引いた表示可能領域を計算
+      const headerH = document.querySelector('header')?.offsetHeight || 0;
+      const availableW = Math.max(320, window.innerWidth  - 16); // 余白少しマージン
+      const availableH = Math.max(320, window.innerHeight - headerH - 16);
+
+      // 実寸のpxサイズを取得（transformリセット後）
+      const rect = stage.getBoundingClientRect();
+      const scale = Math.min(availableW / rect.width, availableH / rect.height, 1); // 拡大はしない
+
+      stage.style.transform = `scale(${scale})`;
+    }
+
+    // トグルボタン
+    $('#fitToggle').addEventListener('click', ()=>{
+      fitEnabled = !fitEnabled;
+      $('#fitToggle').textContent = `全体表示：${fitEnabled ? 'ON' : 'OFF（実寸）'}`;
+      autoFit();
+    });
+
+    // 画面サイズ変化・ロード時に再計算
+    window.addEventListener('resize', autoFit);
+    window.addEventListener('orientationchange', autoFit);
+    window.addEventListener('load', autoFit);
+    // 初期化
+    autoFit();
 
     /* ===== 保存（PNG / A5 PDF / A4二面PDF） ===== */
     async function savePNG(){
       const el=$('#stage');
+      // 生成時は一旦スケールを外して実寸キャプチャ
+      const prev = el.style.transform;
+      el.style.transform = 'scale(1)';
       const canvas=await html2canvas(el,{scale:2,backgroundColor:'#ffffff'});
+      el.style.transform = prev;
       const url=canvas.toDataURL('image/png');
       const a=document.createElement('a'); a.download='POP_A5.png'; a.href=url; a.target='_blank'; a.click();
     }
     async function savePDF(){
       const el=$('#stage');
+      const prev = el.style.transform;
+      el.style.transform = 'scale(1)';
       const canvas=await html2canvas(el,{scale:2,backgroundColor:'#ffffff'});
+      el.style.transform = prev;
       const img=canvas.toDataURL('image/jpeg',0.95);
       const { jsPDF } = window.jspdf; const pdf=new jsPDF({orientation:'p',unit:'mm',format:'a5'});
       const w=pdf.internal.pageSize.getWidth(), h=pdf.internal.pageSize.getHeight();
       pdf.addImage(img,'JPEG',0,0,w,h); pdf.save('POP_A5.pdf');
     }
     async function savePDF_A4x2(){
-      const el = document.querySelector('#stage');
+      const el = $('#stage');
+      const prev = el.style.transform;
+      el.style.transform = 'scale(1)';
       const canvas = await html2canvas(el, { scale: 2, backgroundColor: '#ffffff' });
+      el.style.transform = prev;
       const img = canvas.toDataURL('image/jpeg', 0.95);
 
       const { jsPDF } = window.jspdf;
@@ -380,12 +413,12 @@
       const pageH = pdf.internal.pageSize.getHeight();  // 210
 
       const targetW = 140;                               // A5幅よりわずかに小さめ
-      const targetH = targetW * (210/148);               // 比率維持 → 約198.6mm
-      const marginX = 8;                                 // 左右余白
-      const gutter  = 6;                                 // 中央ノド
+      const targetH = targetW * (210/148);               // 比率維持
+      const marginX = 8;
+      const gutter  = 6;
       const x1 = marginX;
       const x2 = marginX + targetW + gutter;
-      const y  = (pageH - targetH) / 2;                  // 縦中央
+      const y  = (pageH - targetH) / 2;
 
       pdf.addImage(img, 'JPEG', x1, y, targetW, targetH);
       pdf.addImage(img, 'JPEG', x2, y, targetW, targetH);
@@ -402,4 +435,3 @@
   </script>
 </body>
 </html>
-
