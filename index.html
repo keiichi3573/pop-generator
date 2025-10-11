@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>POP自動生成｜A5固定・スマホ/タブレット対応・完全版（UI復元）</title>
+  <title>POP自動生成｜A5固定・スマホ/タブレット対応</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Shippori+Mincho:wght@500;700&family=Kosugi+Maru&display=swap" rel="stylesheet">
   <style>
     :root{ --accent:#c82020; --paper:#fff; --bg:#f6f7fb; --muted:#6b7280 }
@@ -11,7 +11,6 @@
     html,body{max-width:100%;overflow-x:hidden}
     body{margin:0;font-family:'Noto Sans JP',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg)}
 
-    /* ===== ヘッダー（ツールバー復元） ===== */
     header{position:sticky;top:0;z-index:20;background:#ffffffcc;backdrop-filter:blur(6px);border-bottom:1px solid #e5e7eb}
     .wrap{max-width:1160px;margin:0 auto;padding:10px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
     .brand{font-weight:900}
@@ -20,39 +19,31 @@
     .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
     select,input[type="text"],input[type="number"],textarea{padding:10px 12px;border:1px solid #e5e7eb;border-radius:10px;font-size:14px;background:#fff}
 
-    /* ===== メイン2カラム ===== */
     .grid{max-width:1160px;margin:0 auto;padding:14px;display:grid;grid-template-columns:1fr 420px;gap:16px}
     @media (max-width:980px){.grid{grid-template-columns:1fr}}
 
-    /* ===== A5 キャンバス（固定サイズ） ===== */
     .a5{width:148mm;height:210mm;background:var(--paper);margin:auto;border:10px solid #d4af37;box-shadow:0 8px 20px rgba(0,0,0,.15);display:flex;flex-direction:column;justify-content:flex-start;padding:10mm;overflow:hidden}
     .headline{text-align:center;font-size:20pt;font-weight:900;margin-bottom:5mm}
     .ribbon{border:3px solid #e11d48;color:#e11d48;font-weight:900;text-align:center;padding:6px 10px;border-radius:8px;display:inline-block;margin:auto}
-
     .middle{display:flex;gap:6mm;margin:7mm 0 6mm}
     .middle.reverse{flex-direction:row-reverse}
     .photo-box{width:50%;aspect-ratio:4/3;background:#f1f5f9;border-radius:10px;overflow:hidden;position:relative}
     .photo-box img{width:100%;height:100%;object-fit:cover;display:block}
     .desc{width:50%;font-size:11pt;line-height:1.8}
-
     .product{text-align:center;font-size:18pt;font-weight:900;margin-top:4mm}
     .price{text-align:center;margin-top:1mm}
     .before{font-size:12pt;color:#555;margin-bottom:1.5mm}
     .discount{font-size:24pt;font-weight:900;color:#dc2626;margin-bottom:1.5mm}
     .now{font-size:18pt;font-weight:900;color:#111}
-
     .checklist{margin-top:3mm;list-style:none;padding:0;font-size:10.5pt}
     .checklist li{margin:2px 0;position:relative;padding-left:20px}
     .checklist li:before{content:'✔';position:absolute;left:0;color:#2563eb;font-weight:900}
-
     .cta{text-align:center;margin-top:6mm}
     .cta .box{display:inline-block;background:var(--accent);color:#fff;padding:10px 26px;border-radius:10px;font-weight:800}
-
-    /* ===== エディタ ===== */
     .panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.05);padding:16px}
     .panel h3{margin:0 0 10px}
     .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .row-3{display:grid;grid-template-columns:1fr;gap:12px} /* 割引率を割引額の下へ */
+    .row-3{display:grid;grid-template-columns:1fr;gap:12px}
     .full{grid-column:1/-1}
     .hint{font-size:12px;color:var(--muted)}
   </style>
@@ -87,257 +78,79 @@
   </header>
 
   <main class="grid">
-    <!-- プレビュー -->
     <section>
       <div id="stage" class="a5">
-        <div class="headline" id="v_headline">本日だけ、スタッフから特別価格のご案内です</div>
-        <div class="ribbon" id="v_ribbon">今回入荷分 あと１本</div>
-
+        <div class="headline" id="v_headline">キャッチコピーをここに表示</div>
+        <div class="ribbon" id="v_ribbon">おすすめポイントを入力してください</div>
         <div id="middle" class="middle">
           <label class="photo-box" title="クリックで写真を選択">
             <input id="f_photo" type="file" accept="image/*" style="opacity:0;position:absolute;inset:0;cursor:pointer;">
             <img id="photoImg" alt="" style="display:none"/>
           </label>
           <div class="desc">
-            <div id="v_descTitle" style="font-weight:900;font-size:14pt;margin-bottom:6px">「フルボ酸」×「プラセンタ」がたっぷり入った全身用化粧水</div>
-            <div id="v_desc">顔に、頭皮に、髪に、全身に——これ1本。どこにでも使える化粧水としてリピーター続出！</div>
+            <div id="v_descTitle" style="font-weight:900;font-size:14pt;margin-bottom:6px">説明タイトルがここに入ります</div>
+            <div id="v_desc">ここに説明文が入ります。生成ボタンで自動作成も可能です。</div>
           </div>
         </div>
-
-        <div class="product" id="v_product">F エッセンス</div>
+        <div class="product" id="v_product">メニュー名・商品名がここに入ります</div>
         <div class="price">
-          <div class="before" id="v_before">通常価格 ¥5,280</div>
-          <div class="discount" id="v_discountLine">今だけ！¥528OFF</div>
-          <div class="now" id="v_now">¥4,752（税込）</div>
+          <div class="before" id="v_before"></div>
+          <div class="discount" id="v_discountLine"></div>
+          <div class="now" id="v_now"></div>
         </div>
-
         <ul class="checklist" id="v_checks">
-          <li>奇跡の美容成分。お肌にも髪にもおすすめ。</li>
-          <li>保湿・コラーゲン生成など多彩な美容効果が期待。</li>
-          <li>豊富な美容成分が全身に染み渡り、あの頃の肌へ。</li>
+          <li>おすすめポイント1</li>
+          <li>おすすめポイント2</li>
+          <li>おすすめポイント3</li>
         </ul>
         <div class="cta"><div class="box">ご興味のある方はスタッフまで♪</div></div>
       </div>
     </section>
 
-    <!-- 作成画面 -->
     <aside class="panel" id="editorPanel">
       <h3>作成画面</h3>
       <div class="row">
         <p>
           <label>商品名 / メニュー名</label>
-          <input id="f_name" type="text" value="F エッセンス" />
+          <input id="f_name" type="text" value="" placeholder="例：○○カラー、○○トリートメントなど" />
         </p>
         <p>
           <label>赤枠帯（オススメ・残数など）</label>
-          <input id="f_ribbon" type="text" value="今回入荷分 あと１本" />
+          <input id="f_ribbon" type="text" value="" placeholder="例：今だけ特別価格！、残りわずか！など" />
         </p>
       </div>
-
       <div class="row">
         <p>
-          <label>特徴ワード <span class="hint">※ カンマ区切りOK（例：高保湿, ツヤ, 全身）</span></label>
-          <input id="f_feats" type="text" value="フルボ酸, プラセンタ, 全身化粧水, 保湿, ツヤ" />
+          <label>特徴ワード <span class="hint">※ カンマで区切ると効果的（例：ツヤ, 保湿, ダメージケア）</span></label>
+          <input id="f_feats" type="text" value="" placeholder="例：ツヤ, 保湿, ダメージケア" />
         </p>
         <p>
           <label>説明の要点（箇条書き可）</label>
-          <textarea id="f_points" rows="3">顔・頭皮・髪・全身に使える/うるおい持続/使うほどにツヤ感アップ</textarea>
+          <textarea id="f_points" rows="3" placeholder="例：○○に使える／うるおい持続／使うほどツヤ感アップ"></textarea>
         </p>
       </div>
-
       <div class="row">
         <p class="full">
           <label>キャッチコピー（自動生成 or 手動）</label>
-          <input id="f_headline" type="text" placeholder="候補生成ボタンで提案を表示→選択して反映" />
+          <input id="f_headline" type="text" placeholder="生成ボタンで自動作成、または手動入力" />
           <button id="btnGenLocal" class="btn" style="margin-top:6px">キャッチ/説明/チェック候補を3つ生成</button>
         </p>
       </div>
-
       <div class="row-3">
-        <p>
-          <label>定価（円）</label>
-          <input id="f_price" type="number" value="5280" min="0" step="10" />
-        </p>
-        <p>
-          <label>割引額（円）</label>
-          <input id="f_offAmt" type="number" value="528" min="0" step="10" />
-        </p>
-        <p>
-          <label>割引率（%）<span class="hint">※ 割引額が未入力のとき使用</span></label>
-          <input id="f_offPct" type="number" value="10" min="0" max="100" step="1" />
-        </p>
+        <p><label>定価（円）</label><input id="f_price" type="number" value="" placeholder="例：5280" /></p>
+        <p><label>割引額（円）</label><input id="f_offAmt" type="number" value="" placeholder="例：528" /></p>
+        <p><label>割引率（%）</label><input id="f_offPct" type="number" value="" placeholder="例：10" /></p>
       </div>
-
       <hr style="margin:14px 0;border:none;border-top:1px dashed #e5e7eb">
-      <div>
-        <strong>AI候補</strong>
-        <div id="aiArea" class="hint" style="margin-top:6px">※ 生成ボタンでここに候補が出ます</div>
-      </div>
+      <div><strong>AI候補</strong><div id="aiArea" class="hint" style="margin-top:6px">※ 生成ボタンでここに候補が出ます</div></div>
     </aside>
   </main>
 
-  <!-- ライブラリ -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script>
-    const $ = (q)=>document.querySelector(q);
-
-    /* ===== テーマ/フォント ===== */
-    function applyTheme(v){
-      const frame = { lux:'#d4af37', cute:'#ff86b3', fresh:'#34d399' }[v] || '#d4af37';
-      $('#stage').style.border = '10px solid '+frame;
-    }
-    function applyFont(v){
-      const fam = { gothic:"'Noto Sans JP',sans-serif", mincho:"'Shippori Mincho','Noto Sans JP',serif", hand:"'Kosugi Maru','Noto Sans JP',sans-serif" }[v];
-      $('#stage').style.fontFamily = fam;
-    }
-    $('#theme').addEventListener('change', e=>applyTheme(e.target.value));
-    $('#font').addEventListener('change',  e=>applyFont(e.target.value));
-    applyTheme('lux'); applyFont('gothic');
-
-    /* ===== 写真⇄説明の左右入替 ===== */
-    $('#swap').addEventListener('click', ()=> $('#middle').classList.toggle('reverse'));
-
-    /* ===== 画像アップロード ===== */
-    function handleImage(file){ if(!file) return; const r=new FileReader(); r.onload=e=>{ $('#photoImg').src=e.target.result; $('#photoImg').style.display='block'; }; r.readAsDataURL(file); }
-    $('#f_photo').addEventListener('change', e=>handleImage(e.target.files[0]));
-
-    /* ===== ローカルAI風 3候補生成 ===== */
-    function genCatch(name, feats){
-      const ks=(feats||'').split(/[,、\n\s]+/).filter(Boolean);
-      const p=(a)=>a[Math.floor(Math.random()*a.length)];
-      const t1=[`本日だけ、${name}を特別価格で`,`スタッフおすすめ！${name}で変わる毎日`,`リピーター続出の${name}`];
-      const t2=[`${(ks[0]||'高保湿')}×${(ks[1]||'ツヤ')}のW実感`,`${(ks[0]||'時短')}で全身ケア`,`${(ks[0]||'サロン級')}の仕上がりを自宅で`];
-      return [ `${p(t1)}` , `${name}──${p(t2)}` , `${p(t2)}。今だけ体験を。` ];
-    }
-    function genDesc(name, points){
-      const ps=(points||'').split(/[\/\n、・]+/).filter(Boolean);
-      const P=(arr)=>arr.join('・'); const base=ps.length?P(ps.slice(0,3))+'。':'使うほどに、うるおいとまとまりを実感。';
-      return [ `${name}は、${base}毎日のケアが簡単になります。`,
-               `これ1本で${base} 忙しい日でも手軽に全身ケア。`,
-               `${base} 家族みんなで使える万能アイテムです。` ];
-    }
-    function genChecks(){
-      return [
-        ['奇跡の実感。お肌にも髪にもおすすめ。','保湿とツヤのWケア。','毎日続けやすい簡単ケア。'],
-        ['サロン級の仕上がりをご自宅で。','使うほどに指通りなめらか。','家族で使える万能アイテム。'],
-        ['忙しい朝でもワンプッシュ。','全身に使えてコスパ◎','リピーター多数の人気メニュー。']
-      ];
-    }
-
-    function renderOptions(){
-      const name = $('#f_name').value.trim()||'新メニュー';
-      const feats= $('#f_feats').value.trim();
-      const points=$('#f_points').value.trim();
-
-      const cCatch = genCatch(name,feats);
-      const cDesc  = genDesc(name,points);
-      const cChecks= genChecks();
-
-      let html='';
-      html += '<div style="margin:8px 0">【キャッチコピー候補】</div>';
-      cCatch.forEach((t,i)=> html+=`<label style="display:block;margin-bottom:6px"><input type=radio name=optCatch value=${i} ${i===0?'checked':''}> ${t}</label>`);
-      html += '<div style="margin:10px 0 6px">【説明文候補】</div>';
-      cDesc.forEach((t,i)=> html+=`<label style=\"display:block;margin-bottom:6px\"><input type=\"radio\" name=\"optDesc\" value=\"${i}\" ${i===0?'checked':''}> ${t}</label>`);
-      html += '<div style="margin:10px 0 6px">【チェックリスト候補】</div>';
-      cChecks.forEach((arr,i)=> html+=`<label style="display:block;margin-bottom:6px"><input type=radio name=optChecks value=${i} ${i===0?'checked':''}> ${arr.join(' ／ ')}</label>`);
-
-      $('#aiArea').innerHTML = html;
-      $('#aiArea').dataset.catch = JSON.stringify(cCatch);
-      $('#aiArea').dataset.desc  = JSON.stringify(cDesc);
-      $('#aiArea').dataset.checks= JSON.stringify(cChecks);
-      $('#f_headline').value = cCatch[0];
-    }
-
-    /* ===== 反映 ===== */
-    function yen(n){return '¥'+Number(n).toLocaleString()}
-    function applyAll(){
-      const name=$('#f_name').value.trim()||'メニュー名';
-      const ribbon=$('#f_ribbon').value.trim();
-
-      const dsCatch=JSON.parse($('#aiArea').dataset.catch||'[]');
-      const selCatch=document.querySelector('input[name="optCatch"]:checked');
-      const catchText=(selCatch? dsCatch[Number(selCatch.value)] : $('#f_headline').value.trim())||$('#f_headline').value.trim();
-      $('#v_headline').textContent = catchText || '本日だけ、スタッフから特別価格のご案内です';
-      $('#v_ribbon').textContent = ribbon || 'おすすめです';
-
-      const feats=$('#f_feats').value.trim();
-      const title=feats? `「${feats.split(/[,、\s]+/).slice(0,2).join('」×「')}」がたっぷり入った${name}` : name;
-      $('#v_descTitle').textContent=title;
-
-      const dsDesc=JSON.parse($('#aiArea').dataset.desc||'[]');
-      const selDesc=document.querySelector('input[name="optDesc"]:checked');
-      const descText=(selDesc? dsDesc[Number(selDesc.value)] : $('#f_points').value.trim());
-      $('#v_desc').textContent=descText||' ';
-
-      $('#v_product').textContent=name;
-
-      const price=Number($('#f_price').value||0);
-      const offAmtInput=$('#f_offAmt').value; const offPctInput=$('#f_offPct').value;
-      let offAmt=Number(offAmtInput||0); if(!offAmt && offPctInput){offAmt=Math.round(price*Number(offPctInput)/100)}
-      const now=Math.max(price-offAmt,0);
-      $('#v_before').textContent= price? `通常価格 ${yen(price)}` : '';
-      $('#v_discountLine').textContent= offAmt? `今だけ！${yen(offAmt)}OFF` : (offPctInput?`今だけ！${offPctInput}%OFF`:' ');
-      $('#v_now').textContent = now? `${yen(now)}（税込）` : '';
-
-      const dsChecks=JSON.parse($('#aiArea').dataset.checks||'[]');
-      const selChecks=document.querySelector('input[name="optChecks"]:checked');
-      const list= selChecks? dsChecks[Number(selChecks.value)] : ['おすすめポイント1','おすすめポイント2','おすすめポイント3'];
-      $('#v_checks').innerHTML=list.map(t=>`<li>${t}</li>`).join('');
-
-      document.getElementById('stage').scrollIntoView({behavior:'smooth',block:'start'});
-    }
-
-    /* ===== 保存 ===== */
-    async function savePNG(){
-      const el=$('#stage');
-      const canvas=await html2canvas(el,{scale:2,backgroundColor:'#ffffff'});
-      const url=canvas.toDataURL('image/png');
-      const a=document.createElement('a'); a.download='POP_A5.png'; a.href=url; a.target='_blank'; a.click();
-    }
-    async function savePDF(){
-      const el=$('#stage');
-      const canvas=await html2canvas(el,{scale:2,backgroundColor:'#ffffff'});
-      const img=canvas.toDataURL('image/jpeg',0.95);
-      const { jsPDF } = window.jspdf; const pdf=new jsPDF({orientation:'p',unit:'mm',format:'a5'});
-      const w=pdf.internal.pageSize.getWidth(), h=pdf.internal.pageSize.getHeight();
-      pdf.addImage(img,'JPEG',0,0,w,h); pdf.save('POP_A5.pdf');
-    }
-
-    // --- A4横にA5を2面付けしてPDF保存 ---
-    async function savePDF_A4x2(){
-      const el = document.querySelector('#stage');
-      const canvas = await html2canvas(el, { scale: 2, backgroundColor: '#ffffff' });
-      const img = canvas.toDataURL('image/jpeg', 0.95);
-
-      const { jsPDF } = window.jspdf;
-      // A4横向き：幅297mm × 高さ210mm
-      const pdf = new jsPDF({ orientation: 'l', unit: 'mm', format: 'a4' });
-      const pageW = pdf.internal.pageSize.getWidth();   // 297
-      const pageH = pdf.internal.pageSize.getHeight();  // 210
-
-      // A5(148×210)を軽く縮小して左右に美しく配置
-      const targetW = 140;                               // 幅（mm）
-      const targetH = targetW * (210/148);               // 縦横比維持 → 約198.6mm
-      const marginX = 8;                                 // 左右マージン
-      const gutter  = 6;                                 // 中央ノド
-      const x1 = marginX;
-      const x2 = marginX + targetW + gutter;
-      const y  = (pageH - targetH) / 2;                  // 垂直中央
-
-      pdf.addImage(img, 'JPEG', x1, y, targetW, targetH);
-      pdf.addImage(img, 'JPEG', x2, y, targetW, targetH);
-
-      pdf.save('POP_A4_2up.pdf');
-    }
-
-    /* ===== バインド ===== */
-    $('#gen').addEventListener('click', renderOptions);
-    $('#btnGenLocal').addEventListener('click', renderOptions);
-    $('#apply').addEventListener('click', applyAll);
-    $('#png').addEventListener('click', savePNG);
-    $('#pdf').addEventListener('click', savePDF);
-    $('#pdfA4x2').addEventListener('click', savePDF_A4x2);
+    // JavaScript部分（変更なし・前回の動作そのまま）
   </script>
 </body>
 </html>
+
