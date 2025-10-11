@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>POP自動生成｜A5固定・スマホ対応（安定版）</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Shippori+Mincho:wght@500;700&family=Kosugi+Maru&display=swap" rel="stylesheet">
 
@@ -89,6 +89,41 @@
     .row-3{display:grid;grid-template-columns:1fr;gap:12px} /* 割引率を割引額の下へ */
     .full{grid-column:1/-1}
     .hint{font-size:12px;color:var(--muted)}
+/* ====== 見切れ防止・上書きパッチ（ここから） ====== */
+
+/* 右端を作っていた要因：ヘッダーやグリッドの実幅が画面幅を超える問題を抑制 */
+header .wrap,
+.grid {
+  width: 100%;
+  max-width: 100vw;   /* ← 画面幅を超えない */
+  overflow: hidden;
+}
+
+/* ツールバーのボタン群が横に広がり過ぎた時は折り返す */
+.tools { flex-wrap: wrap; min-width: 0; }
+.tools > * { max-width: 100%; }
+
+/* A5キャンバス：iPhone Chrome/Safari で“右と下”が確実に収まる幅指定
+   420px（PC）～ 最小300px（小型端末）までを自動可変 */
+.a5{
+  width: clamp(300px, 92vw, 420px); /* ← 画面幅に合わせて必ず収まる */
+  height: auto;
+  max-width: -webkit-fill-available; /* iOS系ブラウザ向けの保険 */
+}
+
+/* ラッパーに少し左右のクッションを作る（安全域込み） */
+#stageWrap{
+  padding-left: calc(8px + env(safe-area-inset-left));
+  padding-right: calc(8px + env(safe-area-inset-right));
+}
+
+/* とくに小さい端末（SE等）では余白をさらに詰める */
+@media (max-width: 380px){
+  .a5{ width: 94vw; padding: 7mm; border-width: 6px; }
+}
+
+/* ====== 見切れ防止・上書きパッチ（ここまで） ====== */
+
   </style>
   <!-- ↑↑↑ 絶対に </style> を消さないでください ↑↑↑ -->
 </head>
