@@ -110,24 +110,12 @@
     <aside class="panel" id="editorPanel">
       <h3>作成画面</h3>
       <div class="row">
-        <p>
-          <label>商品名 / メニュー名</label>
-          <input id="f_name" type="text" value="" placeholder="例：○○カラー、○○トリートメントなど" />
-        </p>
-        <p>
-          <label>赤枠帯（オススメ・残数など）</label>
-          <input id="f_ribbon" type="text" value="" placeholder="例：今だけ特別価格！、残りわずか！など" />
-        </p>
+        <p><label>商品名 / メニュー名</label><input id="f_name" type="text" value="" placeholder="例：○○カラー、○○トリートメントなど" /></p>
+        <p><label>赤枠帯（オススメ・残数など）</label><input id="f_ribbon" type="text" value="" placeholder="例：今だけ特別価格！、残りわずか！など" /></p>
       </div>
       <div class="row">
-        <p>
-          <label>特徴ワード <span class="hint">※ カンマで区切ると効果的（例：ツヤ, 保湿, ダメージケア）</span></label>
-          <input id="f_feats" type="text" value="" placeholder="例：ツヤ, 保湿, ダメージケア" />
-        </p>
-        <p>
-          <label>説明の要点（箇条書き可）</label>
-          <textarea id="f_points" rows="3" placeholder="例：○○に使える／うるおい持続／使うほどツヤ感アップ"></textarea>
-        </p>
+        <p><label>特徴ワード <span class="hint">※ カンマで区切ると効果的（例：ツヤ, 保湿, ダメージケア）</span></label><input id="f_feats" type="text" value="" placeholder="例：ツヤ, 保湿, ダメージケア" /></p>
+        <p><label>説明の要点（箇条書き可）</label><textarea id="f_points" rows="3" placeholder="例：手触りが違う／うるおい持続／使うほどツヤ感アップ"></textarea></p>
       </div>
       <div class="row">
         <p class="full">
@@ -149,8 +137,69 @@
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script>
-    // JavaScript部分（変更なし・前回の動作そのまま）
-  </script>
-</body>
-</html>
+    const $ = (q)=>document.querySelector(q);
+
+    // ===== テーマ・フォント =====
+    function applyTheme(v){const frame={lux:'#d4af37',cute:'#ff86b3',fresh:'#34d399'}[v]||'#d4af37';$('#stage').style.border='10px solid '+frame;}
+    function applyFont(v){const fam={gothic:"'Noto Sans JP',sans-serif",mincho:"'Shippori Mincho','Noto Sans JP',serif",hand:"'Kosugi Maru','Noto Sans JP',sans-serif"}[v];$('#stage').style.fontFamily=fam;}
+    $('#theme').addEventListener('change',e=>applyTheme(e.target.value));
+    $('#font').addEventListener('change',e=>applyFont(e.target.value));
+    applyTheme('lux');applyFont('gothic');
+
+    // ===== 画像入替・アップロード =====
+    $('#swap').addEventListener('click',()=>$('#middle').classList.toggle('reverse'));
+    function handleImage(file){if(!file)return;const r=new FileReader();r.onload=e=>{$('#photoImg').src=e.target.result;$('#photoImg').style.display='block';};r.readAsDataURL(file);}
+    $('#f_photo').addEventListener('change',e=>handleImage(e.target.files[0]));
+
+    // ===== ローカルAI風自動生成 =====
+    function genCatch(name,feats){const ks=(feats||'').split(/[,、\n\s]+/).filter(Boolean);const p=a=>a[Math.floor(Math.random()*a.length)];const t1=[`本日だけ、${name}を特別価格で`,`スタッフおすすめ！${name}で変わる毎日`,`リピーター続出の${name}`];const t2=[`${(ks[0]||'高保湿')}×${(ks[1]||'ツヤ')}のW実感`,`${(ks[0]||'時短')}で全身ケア`,`${(ks[0]||'サロン級')}の仕上がりを自宅で`];return[`${p(t1)}`,`${name}──${p(t2)}`,`${p(t2)}。今だけ体験を。`];}
+    function genDesc(name,points){const ps=(points||'').split(/[\/\n、・]+/).filter(Boolean);const P=arr=>arr.join('・');const base=ps.length?P(ps.slice(0,3))+'。':'使うほどに、うるおいとまとまりを実感。';return[`${name}は、${base}毎日のケアが簡単になります。`,`これ1本で${base} 忙しい日でも手軽にケア。`,`${base} 家族みんなで使える万能アイテムです。`];}
+    function genChecks(){return[['奇跡の実感。お肌にも髪にもおすすめ。','保湿とツヤのWケア。','毎日続けやすい簡単ケア。'],['サロン級の仕上がりをご自宅で。','使うほどに指通りなめらか。','家族で使える万能アイテム。'],['忙しい朝でもワンプッシュ。','○○に使えてコスパ◎','リピーター多数の人気メニュー。']];}
+
+    function renderOptions(){
+      const name=$('#f_name').value.trim()||'新メニュー';
+      const feats=$('#f_feats').value.trim();
+      const points=$('#f_points').value.trim();
+      const cCatch=genCatch(name,feats);
+      const cDesc=genDesc(name,points);
+      const cChecks=genChecks();
+      let html='';
+      html+='<div style="margin:8px 0">【キャッチコピー候補】</div>';
+      cCatch.forEach((t,i)=>html+=`<label style="display:block;margin-bottom:6px"><input type=radio name=optCatch value=${i} ${i===0?'checked':''}> ${t}</label>`);
+      html+='<div style="margin:10px 0 6px">【説明文候補】</div>';
+      cDesc.forEach((t,i)=>html+=`<label style="display:block;margin-bottom:6px"><input type=radio name=optDesc value=${i} ${i===0?'checked':''}> ${t}</label>`);
+      html+='<div style="margin:10px 0 6px">【チェックリスト候補】</div>';
+      cChecks.forEach((arr,i)=>html+=`<label style="display:block;margin-bottom:6px"><input type=radio name=optChecks value=${i} ${i===0?'checked':''}> ${arr.join(' ／ ')}</label>`);
+      $('#aiArea').innerHTML=html;
+      $('#aiArea').dataset.catch=JSON.stringify(cCatch);
+      $('#aiArea').dataset.desc=JSON.stringify(cDesc);
+      $('#aiArea').dataset.checks=JSON.stringify(cChecks);
+      $('#f_headline').value=cCatch[0];
+    }
+
+    // ===== 反映 =====
+    function yen(n){return '¥'+Number(n).toLocaleString();}
+    function applyAll(){
+      const name=$('#f_name').value.trim()||'メニュー名';
+      const ribbon=$('#f_ribbon').value.trim();
+      const dsCatch=JSON.parse($('#aiArea').dataset.catch||'[]');
+      const selCatch=document.querySelector('input[name="optCatch"]:checked');
+      const catchText=(selCatch?dsCatch[Number(selCatch.value)]:$('#f_headline').value.trim())||$('#f_headline').value.trim();
+      $('#v_headline').textContent=catchText||'キャッチコピーをここに表示';
+      $('#v_ribbon').textContent=ribbon||'おすすめです';
+      const feats=$('#f_feats').value.trim();
+      const title=feats?`「${feats.split(/[,、\s]+/).slice(0,2).join('」×「')}」がたっぷり入った${name}`:name;
+      $('#v_descTitle').textContent=title;
+      const dsDesc=JSON.parse($('#aiArea').dataset.desc||'[]');
+      const selDesc=document.querySelector('input[name="optDesc"]:checked');
+      const descText=(selDesc?dsDesc[Number(selDesc.value)]:$('#f_points').value.trim());
+      $('#v_desc').textContent=descText||' ';
+      $('#v_product').textContent=name;
+      const price=Number($('#f_price').value||0);
+      const offAmtInput=$('#f_offAmt').value;const offPctInput=$('#f_offPct').value;
+      let offAmt=Number(offAmtInput||0);if(!offAmt&&offPctInput){offAmt=Math.round(price*Number(offPctInput)/100);}
+      const now=Math.max(price-offAmt,0);
+      $('#v_before').textContent=price?`通常価格 ${yen(price)}`:'';
+      $('#v_discountLine').textContent=offAmt?`今だけ！${yen(offAmt)}OFF`:(offPctInput?`
+
 
