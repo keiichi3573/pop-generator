@@ -135,7 +135,6 @@
       display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;
     }
 
-    /* 右プレビューは固定しない */
     .preview-card{position:static}
 
     .stage-wrap{
@@ -297,7 +296,7 @@
       color:#374151;
     }
 
-    .stand-illu{
+    .stand-photo{
       width:100%;
       max-width:260px;
       margin:10px auto 0;
@@ -305,9 +304,8 @@
       background:#fff;
       border:1px solid #d1d5db;
       border-radius:12px;
-      padding:10px;
+      padding:6px;
     }
-    .stand-illu svg{width:100%;height:auto;display:block}
 
     .badge-note{
       display:inline-block;
@@ -346,7 +344,6 @@
 
   <main class="page">
     <div class="layout">
-      <!-- 左：入力 -->
       <section class="stack">
         <div class="card">
           <h2 class="section-title">基本入力</h2>
@@ -423,23 +420,21 @@
           </div>
         </div>
 
-<div class="guide">
-  <h4>設置のコツ</h4>
-  <ul>
-    <li>このようなA5アクリルスタンドに入れて設置するのがおすすめです。</li>
-    <li>設置場所は <strong>受付</strong>・<strong>鏡横</strong> の2か所がベストです。</li>
-    <li>まずは <strong>置いてみる（これが重要）</strong> → <strong>反応を見る</strong> の順で確認してください。</li>
-  </ul>
+        <div class="guide">
+          <h4>設置のコツ</h4>
+          <ul>
+            <li>このようなA5アクリルスタンドに入れて設置するのがおすすめです。</li>
+            <li>設置場所は <strong>受付</strong>・<strong>鏡横</strong> の2か所がベストです。</li>
+            <li>まずは <strong>置いてみる（これが重要）</strong> → <strong>反応を見る</strong> の順で確認してください。</li>
+          </ul>
 
-  <img
-    class="stand-photo"
-    src="https://s3-ap-northeast-1.amazonaws.com/s3.peraichi.com/userData/5bdff16e-2edc-4487-9c88-78a70a0000fe/img/fcc550b0-f942-013e-65b8-0a58a9feac02/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202026-03-03%20113703.png"
-    alt="A5アクリルスタンドの設置イメージ"
-  />
+          <img
+            class="stand-photo"
+            src="https://s3-ap-northeast-1.amazonaws.com/s3.peraichi.com/userData/5bdff16e-2edc-4487-9c88-78a70a0000fe/img/fcc550b0-f942-013e-65b8-0a58a9feac02/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202026-03-03%20113703.png"
+            alt="A5アクリルスタンドの設置イメージ"
+          />
 
-  <div class="badge-note">※ 実際の設置イメージです</div>
-</div>
-          <div class="badge-note">※ 後で実写真にも差し替えできます</div>
+          <div class="badge-note">※ 実際の設置イメージです</div>
         </div>
 
         <div class="card">
@@ -450,7 +445,6 @@
         </div>
       </section>
 
-      <!-- 右：確認用プレビュー -->
       <aside class="card preview-card">
         <h2 class="section-title">プレビュー（確認用）</h2>
         <p class="subtext">ここは確認用です。文字はクリックして直接微調整できます。</p>
@@ -500,4 +494,3 @@
   <script src="./app.js"></script>
 </body>
 </html>
-
