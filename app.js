@@ -1,5 +1,4 @@
-const STORAGE_KEY = "popToolData_v3";
-const TEMPLATE_KEY = "popToolTemplates_v3";
+const STORAGE_KEY = "popToolSimple_v1";
 
 function $(selector, root = document) {
   return root.querySelector(selector);
@@ -31,26 +30,29 @@ function readFileAsDataURL(file) {
 
 function getDefaultData() {
   return {
-    theme: "lux",
     font: "gothic",
-    swapped: false,
     name: "",
     ribbon: "",
     feats: "",
     points: "",
-    headline: "",
-    descManual: "",
-    cta: "ご興味のある方はスタッフまで♪",
     price: "",
     offAmt: "",
     offPct: "",
     photoData: "",
+    generatedCatch: [],
+    generatedDesc: [],
+    generatedChecks: [],
     selectedCatchIndex: 0,
     selectedDescIndex: 0,
     selectedChecksIndex: 0,
-    generatedCatch: [],
-    generatedDesc: [],
-    generatedChecks: []
+    previewHeadline: "",
+    previewDescTitle: "",
+    previewDesc: "",
+    previewProduct: "",
+    previewCheck1: "",
+    previewCheck2: "",
+    previewCheck3: "",
+    previewCta: "ご興味のある方はスタッフまで♪"
   };
 }
 
@@ -68,31 +70,26 @@ function saveData(data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
-function loadTemplates() {
-  try {
-    const raw = localStorage.getItem(TEMPLATE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch (e) {
-    return [];
-  }
-}
-
-function saveTemplates(list) {
-  localStorage.setItem(TEMPLATE_KEY, JSON.stringify(list));
-}
-
 /* ===== 候補生成 ===== */
 function genCatch(name, feats) {
   const n = name || "新メニュー";
   const ks = splitWords(feats);
   const k1 = ks[0] || "ツヤ";
-  const k2 = ks[1] || "うるおい";
+  const k2 = ks[1] || "まとまり";
 
   return [
     `${n}で、${k1}と${k2}を同時に実感。`,
     `今こそ試したい、${n}の新習慣。`,
     `${n}――“なんかいい”を、きちんと実感。`
   ];
+}
+
+function genDescTitle(name, feats) {
+  const n = name || "このメニュー";
+  const ks = splitWords(feats);
+  if (ks.length >= 2) return `「${ks[0]}」×「${ks[1]}」が気になる方へ`;
+  if (ks.length === 1) return `「${ks[0]}」が気になる方へ`;
+  return `${n}の魅力をわかりやすく`;
 }
 
 function genDesc(name, points) {
@@ -133,36 +130,24 @@ function genChecks(name, feats, points) {
   ];
 }
 
-/* ===== 入力ページ用 ===== */
+/* ===== 入力画面 ===== */
 function initIndexPage() {
   const data = loadData();
 
   const els = {
-    theme: $("#theme"),
     font: $("#font"),
-    swap: $("#swap"),
-    gen: $("#gen"),
-    apply: $("#apply"),
-    pdfA4x2: $("#pdfA4x2"),
-    btnGenLocal: $("#btnGenLocal"),
-    aiArea: $("#aiArea"),
-
     f_name: $("#f_name"),
     f_ribbon: $("#f_ribbon"),
     f_feats: $("#f_feats"),
     f_points: $("#f_points"),
-    f_headline: $("#f_headline"),
-    f_descManual: $("#f_descManual"),
-    f_cta: $("#f_cta"),
     f_price: $("#f_price"),
     f_offAmt: $("#f_offAmt"),
     f_offPct: $("#f_offPct"),
     f_photo: $("#f_photo"),
-
-    btnSaveTemplate: $("#btnSaveTemplate"),
-    btnLoadTemplate: $("#btnLoadTemplate"),
-    btnDeleteTemplate: $("#btnDeleteTemplate"),
-    templateSelect: $("#templateSelect"),
+    generateText: $("#generateText"),
+    apply: $("#apply"),
+    openPreview: $("#openPreview"),
+    aiArea: $("#aiArea"),
 
     v_headline: $("#v_headline"),
     v_ribbon: $("#v_ribbon"),
@@ -172,29 +157,20 @@ function initIndexPage() {
     v_before: $("#v_before"),
     v_discountLine: $("#v_discountLine"),
     v_now: $("#v_now"),
-    v_checks: $("#v_checks"),
+    v_check1: $("#v_check1"),
+    v_check2: $("#v_check2"),
+    v_check3: $("#v_check3"),
+    v_cta: $("#v_cta"),
     photoImg: $("#photoImg"),
-    middle: $("#middle"),
-    v_ctaBox: $(".cta .box"),
     stage: $("#stage")
   };
-
-  function applyThemePreview(theme) {
-    if (!els.stage) return;
-    els.stage.classList.remove("theme-normal", "theme-lux", "theme-pop");
-
-    if (theme === "normal") els.stage.classList.add("theme-normal");
-    else if (theme === "pop") els.stage.classList.add("theme-pop");
-    else els.stage.classList.add("theme-lux");
-  }
 
   function applyFontPreview(font) {
     if (!els.stage) return;
     const fam = {
       gothic: "'Noto Sans JP', sans-serif",
       mincho: "'Shippori Mincho','Noto Sans JP',serif",
-      round: "'Kosugi Maru','Noto Sans JP',sans-serif",
-      hand: "'Kosugi Maru','Noto Sans JP',sans-serif"
+      round: "'Kosugi Maru','Noto Sans JP',sans-serif"
     }[font] || "'Noto Sans JP', sans-serif";
     els.stage.style.fontFamily = fam;
   }
@@ -202,15 +178,11 @@ function initIndexPage() {
   function getFormData() {
     return {
       ...data,
-      theme: els.theme?.value || "lux",
       font: els.font?.value || "gothic",
       name: els.f_name?.value.trim() || "",
       ribbon: els.f_ribbon?.value.trim() || "",
       feats: els.f_feats?.value.trim() || "",
       points: els.f_points?.value.trim() || "",
-      headline: els.f_headline?.value.trim() || "",
-      descManual: els.f_descManual?.value.trim() || "",
-      cta: els.f_cta?.value.trim() || "ご興味のある方はスタッフまで♪",
       price: els.f_price?.value || "",
       offAmt: els.f_offAmt?.value || "",
       offPct: els.f_offPct?.value || ""
@@ -218,15 +190,11 @@ function initIndexPage() {
   }
 
   function fillForm() {
-    if (els.theme) els.theme.value = data.theme || "lux";
     if (els.font) els.font.value = data.font || "gothic";
     if (els.f_name) els.f_name.value = data.name || "";
     if (els.f_ribbon) els.f_ribbon.value = data.ribbon || "";
     if (els.f_feats) els.f_feats.value = data.feats || "";
     if (els.f_points) els.f_points.value = data.points || "";
-    if (els.f_headline) els.f_headline.value = data.headline || "";
-    if (els.f_descManual) els.f_descManual.value = data.descManual || "";
-    if (els.f_cta) els.f_cta.value = data.cta || "ご興味のある方はスタッフまで♪";
     if (els.f_price) els.f_price.value = data.price || "";
     if (els.f_offAmt) els.f_offAmt.value = data.offAmt || "";
     if (els.f_offPct) els.f_offPct.value = data.offPct || "";
@@ -236,15 +204,9 @@ function initIndexPage() {
       els.photoImg.style.display = "block";
     }
 
-    if (els.middle && data.swapped) {
-      els.middle.classList.add("reverse");
-    }
-
-    applyThemePreview(data.theme);
     applyFontPreview(data.font);
     renderAiArea();
     renderPreview();
-    renderTemplateOptions();
   }
 
   function renderAiArea() {
@@ -255,16 +217,16 @@ function initIndexPage() {
     const checksList = data.generatedChecks || [];
 
     if (!catchList.length && !descList.length && !checksList.length) {
-      els.aiArea.innerHTML = "※ 「キャッチコピー候補を3つ出す」でここに候補が表示されます";
+      els.aiArea.innerHTML = "※ 「文章候補を作る」を押すと、ここに候補が表示されます";
       return;
     }
 
     let html = "";
 
     if (catchList.length) {
-      html += `<div style="margin:8px 0 6px;font-weight:700;">【キャッチコピー候補を3つ出す】</div>`;
+      html += `<div style="margin:8px 0 6px;font-weight:800;">【キャッチコピー候補】</div>`;
       catchList.forEach((t, i) => {
-        html += `<label style="display:block;margin-bottom:6px;">
+        html += `<label>
           <input type="radio" name="optCatch" value="${i}" ${i === (data.selectedCatchIndex || 0) ? "checked" : ""}>
           ${t}
         </label>`;
@@ -272,9 +234,9 @@ function initIndexPage() {
     }
 
     if (descList.length) {
-      html += `<div style="margin:10px 0 6px;font-weight:700;">【説明文を整える（3案）】</div>`;
+      html += `<div style="margin:10px 0 6px;font-weight:800;">【説明文候補】</div>`;
       descList.forEach((t, i) => {
-        html += `<label style="display:block;margin-bottom:6px;">
+        html += `<label>
           <input type="radio" name="optDesc" value="${i}" ${i === (data.selectedDescIndex || 0) ? "checked" : ""}>
           ${t}
         </label>`;
@@ -282,9 +244,9 @@ function initIndexPage() {
     }
 
     if (checksList.length) {
-      html += `<div style="margin:10px 0 6px;font-weight:700;">【おすすめポイント3つ提案】</div>`;
+      html += `<div style="margin:10px 0 6px;font-weight:800;">【おすすめポイント候補】</div>`;
       checksList.forEach((arr, i) => {
-        html += `<label style="display:block;margin-bottom:6px;">
+        html += `<label>
           <input type="radio" name="optChecks" value="${i}" ${i === (data.selectedChecksIndex || 0) ? "checked" : ""}>
           ${arr.join(" ／ ")}
         </label>`;
@@ -296,8 +258,7 @@ function initIndexPage() {
     $all('input[name="optCatch"]', els.aiArea).forEach(r => {
       r.addEventListener("change", () => {
         data.selectedCatchIndex = Number(r.value);
-        if (els.f_headline) els.f_headline.value = data.generatedCatch[data.selectedCatchIndex] || "";
-        data.headline = els.f_headline.value;
+        data.previewHeadline = data.generatedCatch[data.selectedCatchIndex] || "";
         saveData(data);
         renderPreview();
       });
@@ -306,6 +267,7 @@ function initIndexPage() {
     $all('input[name="optDesc"]', els.aiArea).forEach(r => {
       r.addEventListener("change", () => {
         data.selectedDescIndex = Number(r.value);
+        data.previewDesc = data.generatedDesc[data.selectedDescIndex] || "";
         saveData(data);
         renderPreview();
       });
@@ -314,6 +276,10 @@ function initIndexPage() {
     $all('input[name="optChecks"]', els.aiArea).forEach(r => {
       r.addEventListener("change", () => {
         data.selectedChecksIndex = Number(r.value);
+        const checks = data.generatedChecks[data.selectedChecksIndex] || [];
+        data.previewCheck1 = checks[0] || "";
+        data.previewCheck2 = checks[1] || "";
+        data.previewCheck3 = checks[2] || "";
         saveData(data);
         renderPreview();
       });
@@ -325,32 +291,38 @@ function initIndexPage() {
     Object.assign(data, formData);
     saveData(data);
 
-    const catchText =
-      data.headline ||
+    const autoHeadline =
       data.generatedCatch[data.selectedCatchIndex || 0] ||
       "キャッチコピーをここに表示";
 
-    const descText =
-      data.descManual ||
+    const autoDescTitle = genDescTitle(data.name, data.feats);
+    const autoDesc =
       data.generatedDesc[data.selectedDescIndex || 0] ||
-      data.points ||
       "ここに説明文が入ります。";
 
-    const checks =
+    const autoChecks =
       data.generatedChecks[data.selectedChecksIndex || 0] ||
       ["おすすめポイント1", "おすすめポイント2", "おすすめポイント3"];
 
-    const featWords = splitWords(data.feats);
-    const descTitle = featWords.length
-      ? `「${featWords.slice(0, 2).join("」×「")}」が気になる方へ`
-      : "説明タイトルがここに入ります";
+    if (!data.previewHeadline) data.previewHeadline = autoHeadline;
+    if (!data.previewDescTitle) data.previewDescTitle = autoDescTitle;
+    if (!data.previewDesc) data.previewDesc = autoDesc;
+    if (!data.previewProduct) data.previewProduct = data.name || "メニュー名・商品名がここに入ります";
+    if (!data.previewCheck1) data.previewCheck1 = autoChecks[0];
+    if (!data.previewCheck2) data.previewCheck2 = autoChecks[1];
+    if (!data.previewCheck3) data.previewCheck3 = autoChecks[2];
+    if (!data.previewCta) data.previewCta = "ご興味のある方はスタッフまで♪";
 
-    if (els.v_headline) els.v_headline.textContent = catchText;
+    if (els.v_headline) els.v_headline.textContent = data.previewHeadline;
     if (els.v_ribbon) els.v_ribbon.textContent = data.ribbon || "おすすめポイントを入力してください";
-    if (els.v_descTitle) els.v_descTitle.textContent = descTitle;
-    if (els.v_desc) els.v_desc.textContent = descText;
-    if (els.v_product) els.v_product.textContent = data.name || "メニュー名・商品名がここに入ります";
-    if (els.v_ctaBox) els.v_ctaBox.textContent = data.cta || "ご興味のある方はスタッフまで♪";
+    if (els.v_descTitle) els.v_descTitle.textContent = data.previewDescTitle;
+    if (els.v_desc) els.v_desc.textContent = data.previewDesc;
+    if (els.v_product) els.v_product.textContent = data.previewProduct;
+    if (els.v_cta) els.v_cta.textContent = data.previewCta;
+
+    if (els.v_check1) els.v_check1.textContent = data.previewCheck1;
+    if (els.v_check2) els.v_check2.textContent = data.previewCheck2;
+    if (els.v_check3) els.v_check3.textContent = data.previewCheck3;
 
     const price = Number(data.price || 0);
     let offAmt = Number(data.offAmt || 0);
@@ -371,11 +343,6 @@ function initIndexPage() {
     }
     if (els.v_now) els.v_now.textContent = now ? `${yen(now)}（税込）` : "";
 
-    if (els.v_checks) {
-      els.v_checks.innerHTML = checks.map(t => `<li>${t}</li>`).join("");
-    }
-
-    applyThemePreview(data.theme);
     applyFontPreview(data.font);
 
     if (els.photoImg) {
@@ -387,9 +354,11 @@ function initIndexPage() {
         els.photoImg.style.display = "none";
       }
     }
+
+    saveData(data);
   }
 
-  function generateAllOptions() {
+  function generateTextOptions() {
     const current = getFormData();
     Object.assign(data, current);
 
@@ -400,9 +369,17 @@ function initIndexPage() {
     data.selectedDescIndex = 0;
     data.selectedChecksIndex = 0;
 
-    if (!data.headline && els.f_headline) {
-      els.f_headline.value = data.generatedCatch[0];
-      data.headline = data.generatedCatch[0];
+    data.previewHeadline = data.generatedCatch[0] || "";
+    data.previewDescTitle = genDescTitle(data.name, data.feats);
+    data.previewDesc = data.generatedDesc[0] || "";
+
+    const checks = data.generatedChecks[0] || [];
+    data.previewCheck1 = checks[0] || "";
+    data.previewCheck2 = checks[1] || "";
+    data.previewCheck3 = checks[2] || "";
+
+    if (!data.previewProduct) {
+      data.previewProduct = data.name || "メニュー名・商品名がここに入ります";
     }
 
     saveData(data);
@@ -410,94 +387,28 @@ function initIndexPage() {
     renderPreview();
   }
 
-  function renderTemplateOptions() {
-    if (!els.templateSelect) return;
-
-    const list = loadTemplates();
-    els.templateSelect.innerHTML = `<option value="">テンプレを選択</option>`;
-    list.forEach((item, i) => {
-      const opt = document.createElement("option");
-      opt.value = String(i);
-      opt.textContent = item.templateName || `テンプレ ${i + 1}`;
-      els.templateSelect.appendChild(opt);
+  function bindEditable(el, key) {
+    if (!el) return;
+    el.addEventListener("input", () => {
+      data[key] = el.textContent.trim();
+      saveData(data);
     });
   }
 
-  function saveCurrentAsTemplate() {
-    const name = prompt("テンプレ名を入力してください", data.name || "よく使うPOP");
-    if (!name) return;
-
-    const current = { ...getFormData() };
-    delete current.photoData; // テンプレは軽くするため写真は除外
-    current.templateName = name;
-
-    const list = loadTemplates();
-    list.push(current);
-    saveTemplates(list);
-    renderTemplateOptions();
-    alert("テンプレ保存しました");
-  }
-
-  function loadSelectedTemplate() {
-    if (!els.templateSelect || !els.templateSelect.value) {
-      alert("テンプレを選択してください");
-      return;
-    }
-    const idx = Number(els.templateSelect.value);
-    const list = loadTemplates();
-    const tpl = list[idx];
-    if (!tpl) return;
-
-    const keepPhoto = data.photoData;
-    Object.assign(data, tpl);
-    data.photoData = keepPhoto || data.photoData;
-
-    saveData(data);
-    fillForm();
-    alert("テンプレを読み込みました");
-  }
-
-  function deleteSelectedTemplate() {
-    if (!els.templateSelect || !els.templateSelect.value) {
-      alert("削除するテンプレを選択してください");
-      return;
-    }
-    const idx = Number(els.templateSelect.value);
-    const list = loadTemplates();
-    const target = list[idx];
-    if (!target) return;
-
-    if (!confirm(`「${target.templateName}」を削除しますか？`)) return;
-    list.splice(idx, 1);
-    saveTemplates(list);
-    renderTemplateOptions();
-    alert("削除しました");
-  }
-
-  /* イベント */
   [
-    els.theme, els.font, els.f_name, els.f_ribbon, els.f_feats, els.f_points,
-    els.f_headline, els.f_descManual, els.f_cta, els.f_price, els.f_offAmt, els.f_offPct
+    els.font, els.f_name, els.f_ribbon, els.f_feats,
+    els.f_points, els.f_price, els.f_offAmt, els.f_offPct
   ].forEach(el => {
     if (!el) return;
     el.addEventListener("input", renderPreview);
     el.addEventListener("change", renderPreview);
   });
 
-  if (els.swap) {
-    els.swap.addEventListener("click", () => {
-      data.swapped = !data.swapped;
-      if (els.middle) els.middle.classList.toggle("reverse", data.swapped);
-      saveData(data);
-    });
-  }
-
-  if (els.gen) els.gen.addEventListener("click", generateAllOptions);
-  if (els.btnGenLocal) els.btnGenLocal.addEventListener("click", generateAllOptions);
+  if (els.generateText) els.generateText.addEventListener("click", generateTextOptions);
   if (els.apply) els.apply.addEventListener("click", renderPreview);
 
-  if (els.pdfA4x2) {
-    els.pdfA4x2.addEventListener("click", () => {
+  if (els.openPreview) {
+    els.openPreview.addEventListener("click", () => {
       renderPreview();
       window.open("./preview.html", "_blank");
     });
@@ -514,61 +425,57 @@ function initIndexPage() {
     });
   }
 
-  if (els.btnSaveTemplate) els.btnSaveTemplate.addEventListener("click", saveCurrentAsTemplate);
-  if (els.btnLoadTemplate) els.btnLoadTemplate.addEventListener("click", loadSelectedTemplate);
-  if (els.btnDeleteTemplate) els.btnDeleteTemplate.addEventListener("click", deleteSelectedTemplate);
+  bindEditable(els.v_headline, "previewHeadline");
+  bindEditable(els.v_descTitle, "previewDescTitle");
+  bindEditable(els.v_desc, "previewDesc");
+  bindEditable(els.v_product, "previewProduct");
+  bindEditable(els.v_check1, "previewCheck1");
+  bindEditable(els.v_check2, "previewCheck2");
+  bindEditable(els.v_check3, "previewCheck3");
+  bindEditable(els.v_cta, "previewCta");
 
   fillForm();
 }
 
-/* ===== プレビュー画面用 ===== */
+/* ===== 印刷画面 ===== */
 function initPreviewPage() {
   const data = loadData();
 
-  function themeClass(theme) {
-    if (theme === "normal") return "theme-normal";
-    if (theme === "pop") return "theme-pop";
-    return "theme-lux";
-  }
-
   function fontClass(font) {
     if (font === "mincho") return "font-mincho";
-    if (font === "round" || font === "hand") return "font-round";
+    if (font === "round") return "font-round";
     return "font-gothic";
   }
 
   function applyToPop(popEl) {
     if (!popEl) return;
 
-    popEl.classList.remove("theme-normal", "theme-lux", "theme-pop", "font-gothic", "font-mincho", "font-round");
-    popEl.classList.add(themeClass(data.theme), fontClass(data.font));
+    popEl.classList.remove("font-gothic", "font-mincho", "font-round");
+    popEl.classList.add(fontClass(data.font));
 
-    const catchText =
-      data.headline ||
-      (data.generatedCatch?.[data.selectedCatchIndex || 0]) ||
+    const autoHeadline =
+      data.generatedCatch?.[data.selectedCatchIndex || 0] ||
       "キャッチコピーがここに入ります";
 
-    const descText =
-      data.descManual ||
-      (data.generatedDesc?.[data.selectedDescIndex || 0]) ||
-      data.points ||
+    const autoDescTitle = genDescTitle(data.name, data.feats);
+    const autoDesc =
+      data.generatedDesc?.[data.selectedDescIndex || 0] ||
       "説明文がここに入ります。";
 
-    const checks =
+    const autoChecks =
       data.generatedChecks?.[data.selectedChecksIndex || 0] ||
       ["おすすめポイント1", "おすすめポイント2", "おすすめポイント3"];
 
-    const featWords = splitWords(data.feats);
-    const descTitle = featWords.length
-      ? `「${featWords.slice(0, 2).join("」×「")}」が気になる方へ`
-      : "説明タイトル";
-
-    $(".js-headline", popEl).textContent = catchText;
+    $(".js-headline", popEl).textContent = data.previewHeadline || autoHeadline;
     $(".js-ribbon", popEl).textContent = data.ribbon || "おすすめポイント";
-    $(".js-descTitle", popEl).textContent = descTitle;
-    $(".js-desc", popEl).textContent = descText;
-    $(".js-product", popEl).textContent = data.name || "商品名・メニュー名";
-    $(".js-cta", popEl).textContent = data.cta || "ご興味のある方はスタッフまで♪";
+    $(".js-descTitle", popEl).textContent = data.previewDescTitle || autoDescTitle;
+    $(".js-desc", popEl).textContent = data.previewDesc || autoDesc;
+    $(".js-product", popEl).textContent = data.previewProduct || data.name || "商品名・メニュー名";
+    $(".js-cta", popEl).textContent = data.previewCta || "ご興味のある方はスタッフまで♪";
+
+    $(".js-check1", popEl).textContent = data.previewCheck1 || autoChecks[0];
+    $(".js-check2", popEl).textContent = data.previewCheck2 || autoChecks[1];
+    $(".js-check3", popEl).textContent = data.previewCheck3 || autoChecks[2];
 
     const price = Number(data.price || 0);
     let offAmt = Number(data.offAmt || 0);
@@ -586,9 +493,6 @@ function initPreviewPage() {
       : "";
     $(".js-now", popEl).textContent = now ? `${yen(now)}（税込）` : "";
 
-    const checkWrap = $(".js-checks", popEl);
-    checkWrap.innerHTML = checks.map(t => `<li>${t}</li>`).join("");
-
     const photo = $(".js-photo", popEl);
     if (data.photoData) {
       photo.src = data.photoData;
@@ -596,11 +500,6 @@ function initPreviewPage() {
     } else {
       photo.removeAttribute("src");
       photo.style.display = "none";
-    }
-
-    const middle = popEl.querySelector(".middle");
-    if (middle) {
-      middle.classList.toggle("reverse", !!data.swapped);
     }
   }
 
