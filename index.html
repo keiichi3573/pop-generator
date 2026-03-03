@@ -1,433 +1,655 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>POP自動生成｜A5固定・スマホ対応（安定版）</title>
+  <title>POP自動生成｜スマホ縦対応・入力画面</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Shippori+Mincho:wght@500;700&family=Kosugi+Maru&display=swap" rel="stylesheet">
-
-  <!-- ↓↓↓ 必ずこの <style> ブロックの中だけにCSSを置いてください ↓↓↓ -->
   <style>
-/* 縦向き専用の注意バナー */
-#orientTip{
-  position: sticky; top: 0; z-index: 50;
-  display: none;           /* JSで縦向き時だけ表示 */
-  background: #1f2937; color:#fff;
-  padding: 10px 12px; text-align: center;
-  font-size: 14px; line-height: 1.4;
-}
-#orientTip strong{ color:#ffd166; }
-#orientTip button{
-  margin-left: 10px; padding: 6px 10px;
-  background:#374151; color:#fff; border:1px solid #4b5563;
-  border-radius: 8px; font-weight:700;
-}
-
-    :root{ --accent:#c82020; --paper:#fff; --bg:#f6f7fb; --muted:#6b7280 }
+    :root{
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --line:#e5e7eb;
+      --text:#111827;
+      --muted:#6b7280;
+      --accent:#c82020;
+      --accent-soft:#fff1f2;
+      --shadow:0 8px 24px rgba(15,23,42,.08);
+      --radius:16px;
+    }
     *{box-sizing:border-box}
     html,body{max-width:100%;overflow-x:hidden}
-    body{margin:0;font-family:'Noto Sans JP',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg)}
+    body{
+      margin:0;
+      font-family:'Noto Sans JP',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
 
-    /* ===== ヘッダー（ツールバー） ===== */
-    header{position:sticky;top:0;z-index:20;background:#ffffffcc;backdrop-filter:blur(6px);border-bottom:1px solid #e5e7eb}
-    .wrap{max-width:1160px;margin:0 auto;padding:10px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-    .brand{font-weight:900}
-    .tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .btn{padding:10px 14px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;font-weight:700;cursor:pointer}
-    .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-    select,input[type="text"],input[type="number"],textarea{padding:10px 12px;border:1px solid #e5e7eb;border-radius:10px;font-size:14px;background:#fff}
-
-    /* ===== メイン2カラム ===== */
-    .grid{max-width:1160px;margin:0 auto;padding:14px;display:grid;grid-template-columns:1fr 420px;gap:16px}
-    @media (max-width:980px){.grid{grid-template-columns:1fr}}
-
-    /* ===== キャンバス周り（右端切れ防止のクッション） ===== */
-    #stageWrap{
-      width:100%;
+    header{
+      position:sticky;
+      top:0;
+      z-index:20;
+      background:#ffffffd9;
+      backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar{
+      max-width:1180px;
+      margin:0 auto;
+      padding:10px 14px;
       display:flex;
-      justify-content:center;
-      align-items:flex-start;
-      padding:0 8px;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .brand{
+      font-weight:900;
+      font-size:15px;
+      letter-spacing:.01em;
+    }
+    .brand small{
+      display:block;
+      font-size:11px;
+      color:var(--muted);
+      font-weight:700;
+      margin-top:2px;
+    }
+    .toolbar{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .btn{
+      padding:10px 14px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-weight:700;
+      cursor:pointer;
+      font-size:14px;
+    }
+    .btn.primary{
+      background:var(--accent);
+      color:#fff;
+      border-color:var(--accent);
+    }
+    .btn.ghost{
+      background:#fff;
     }
 
-    /* ===== A5 キャンバス（iPhone/Chrome/Safari 安定版） ===== */
+    .page{
+      max-width:1180px;
+      margin:0 auto;
+      padding:16px 14px 40px;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns: minmax(0, 1fr) 420px;
+      gap:16px;
+      align-items:start;
+    }
+
+    @media (max-width: 1020px){
+      .layout{
+        grid-template-columns:1fr;
+      }
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px;
+    }
+
+    .section-title{
+      margin:0 0 12px;
+      font-size:16px;
+      font-weight:900;
+    }
+    .subtext{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.6;
+    }
+
+    .stack{display:grid;gap:14px}
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    .row-3{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width: 720px){
+      .row, .row-3{
+        grid-template-columns:1fr;
+      }
+    }
+
+    label{
+      display:block;
+      font-size:13px;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:500;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select{
+      width:100%;
+      padding:11px 12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      font-size:14px;
+      background:#fff;
+      color:var(--text);
+    }
+    textarea{
+      resize:vertical;
+      min-height:86px;
+      line-height:1.6;
+    }
+
+    .inline-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      background:#fff;
+      border:1px solid var(--line);
+      color:var(--muted);
+    }
+
+    .preview-card{
+      position:sticky;
+      top:74px;
+    }
+    @media (max-width:1020px){
+      .preview-card{
+        position:static;
+      }
+    }
+
+    .stage-wrap{
+      background:linear-gradient(180deg,#f8fafc 0%, #eef2ff 100%);
+      border-radius:14px;
+      padding:12px;
+      border:1px dashed #cbd5e1;
+    }
+
     .a5{
-      /* 画面幅に合わせて確実に縮小。mmは使わない */
-      width: min(420px, 90vw);
-      /* A5縦っぽい比率を維持：高さは自動 */
-      height: auto;
-
-      background: var(--paper);
-      margin: 12px auto;
-      padding: 9mm;
-      border: 8px solid #d4af37;
-      box-shadow: 0 8px 20px rgba(0,0,0,.15);
-
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      overflow: hidden;
-
-      max-width: -webkit-fill-available; /* iOS Chrome/Safari向け保険 */
-    }
-    /* さらに狭い端末向け微調整（SE等） */
-    @media (max-width:480px){
-      .a5{ width: 94vw; padding: 7mm; border-width: 6px; }
+      width:min(420px, 100%);
+      margin:0 auto;
+      background:#fff;
+      min-height:594px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      padding:8mm;
+      position:relative;
+      overflow:hidden;
+      font-family:'Noto Sans JP',sans-serif;
     }
 
-    .headline{text-align:center;font-size:20pt;font-weight:900;margin-bottom:5mm}
-    .ribbon{border:3px solid #e11d48;color:#e11d48;font-weight:900;text-align:center;padding:6px 10px;border-radius:8px;display:inline-block;margin:auto}
+    /* テーマ枠 */
+    .theme-normal{
+      border:4px solid #d1d5db;
+      border-radius:12px;
+      box-shadow:inset 0 0 0 1px #f3f4f6;
+    }
+    .theme-lux{
+      border:6px solid #d4af37;
+      border-radius:10px;
+      box-shadow:
+        inset 0 0 0 2px rgba(212,175,55,.30),
+        0 8px 18px rgba(0,0,0,.08);
+    }
+    .theme-lux::before,
+    .theme-lux::after{
+      content:"";
+      position:absolute;
+      width:18px;height:18px;
+      border:2px solid #d4af37;
+    }
+    .theme-lux::before{
+      top:7px; left:7px;
+      border-right:none; border-bottom:none;
+    }
+    .theme-lux::after{
+      right:7px; bottom:7px;
+      border-left:none; border-top:none;
+    }
+    .theme-pop{
+      border:6px solid #fb7185;
+      border-radius:18px;
+      box-shadow:inset 0 0 0 3px #ffd1dc;
+    }
 
-    .middle{display:flex;gap:6mm;margin:7mm 0 6mm}
-    .middle.reverse{flex-direction:row-reverse}
-    .photo-box{width:50%;aspect-ratio:4/3;background:#f1f5f9;border-radius:10px;overflow:hidden;position:relative}
-    .photo-box img{width:100%;height:100%;object-fit:cover;display:block}
-    .desc{width:50%;font-size:11pt;line-height:1.8}
+    .headline{
+      text-align:center;
+      font-size:20pt;
+      font-weight:900;
+      line-height:1.35;
+      margin-bottom:5mm;
+      word-break:break-word;
+    }
+    .ribbon-wrap{
+      text-align:center;
+      margin-bottom:5mm;
+      min-height:16mm;
+    }
+    .ribbon{
+      border:3px solid #e11d48;
+      color:#e11d48;
+      font-weight:900;
+      text-align:center;
+      padding:6px 10px;
+      border-radius:8px;
+      display:inline-block;
+      max-width:100%;
+      word-break:break-word;
+    }
 
-    .product{text-align:center;font-size:18pt;font-weight:900;margin-top:4mm}
-    .price{text-align:center;margin-top:1mm}
-    .before{font-size:12pt;color:#555;margin-bottom:1.5mm}
-    .discount{font-size:24pt;font-weight:900;color:#dc2626;margin-bottom:1.5mm}
-    .now{font-size:18pt;font-weight:900;color:#111}
+    .middle{
+      display:flex;
+      gap:5mm;
+      margin:0 0 5mm;
+      align-items:flex-start;
+    }
+    .middle.reverse{
+      flex-direction:row-reverse;
+    }
+    .photo-box{
+      width:50%;
+      aspect-ratio:4/3;
+      background:#f1f5f9;
+      border-radius:10px;
+      overflow:hidden;
+      position:relative;
+      flex-shrink:0;
+    }
+    .photo-box img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:none;
+    }
 
-    .checklist{margin-top:3mm;list-style:none;padding:0;font-size:10.5pt}
-    .checklist li{margin:2px 0;position:relative;padding-left:20px}
-    .checklist li:before{content:'✔';position:absolute;left:0;color:#2563eb;font-weight:900}
+    .desc{
+      width:50%;
+      font-size:10.5pt;
+      line-height:1.75;
+      word-break:break-word;
+    }
+    #v_descTitle{
+      font-weight:900;
+      font-size:13pt;
+      margin-bottom:4px;
+      line-height:1.5;
+    }
 
-    .cta{text-align:center;margin-top:6mm}
-    .cta .box{display:inline-block;background:var(--accent);color:#fff;padding:10px 26px;border-radius:10px;font-weight:800}
+    .product{
+      text-align:center;
+      font-size:18pt;
+      font-weight:900;
+      margin-top:3mm;
+      line-height:1.4;
+      word-break:break-word;
+    }
+    .price{
+      text-align:center;
+      margin-top:1mm;
+    }
+    .before{
+      font-size:11pt;
+      color:#555;
+      min-height:1.5em;
+    }
+    .discount{
+      font-size:20pt;
+      font-weight:900;
+      color:#dc2626;
+      min-height:1.5em;
+    }
+    .now{
+      font-size:17pt;
+      font-weight:900;
+      color:#111;
+      min-height:1.5em;
+    }
 
-    /* ===== エディタ ===== */
-    .panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.05);padding:16px}
-    .panel h3{margin:0 0 10px}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .row-3{display:grid;grid-template-columns:1fr;gap:12px} /* 割引率を割引額の下へ */
-    .full{grid-column:1/-1}
-    .hint{font-size:12px;color:var(--muted)}
+    .checklist{
+      margin-top:4mm;
+      list-style:none;
+      padding:0;
+      font-size:10pt;
+      line-height:1.65;
+    }
+    .checklist li{
+      margin:2px 0;
+      position:relative;
+      padding-left:18px;
+      word-break:break-word;
+    }
+    .checklist li::before{
+      content:'✔';
+      position:absolute;
+      left:0;
+      color:#2563eb;
+      font-weight:900;
+    }
+
+    .cta{
+      text-align:center;
+      margin-top:auto;
+      padding-top:6mm;
+    }
+    .cta .box{
+      display:inline-block;
+      background:var(--accent);
+      color:#fff;
+      padding:10px 22px;
+      border-radius:10px;
+      font-weight:800;
+      max-width:100%;
+      word-break:break-word;
+    }
+
+    .template-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .template-row select{
+      flex:1;
+      min-width:180px;
+    }
+
+    .guide{
+      background:var(--accent-soft);
+      border:1px solid #fecdd3;
+      border-radius:14px;
+      padding:14px;
+    }
+    .guide h4{
+      margin:0 0 8px;
+      font-size:14px;
+      font-weight:900;
+    }
+    .guide ul{
+      margin:8px 0 0 18px;
+      padding:0;
+      font-size:13px;
+      line-height:1.8;
+      color:#374151;
+    }
+
+    .stand-illu{
+      width:100%;
+      max-width:220px;
+      margin:8px auto 0;
+      display:block;
+      background:#fff;
+      border:1px solid #fbcfe8;
+      border-radius:12px;
+      padding:10px;
+    }
+    .stand-illu svg{
+      width:100%;
+      height:auto;
+      display:block;
+    }
+
+    .divider{
+      height:1px;
+      background:linear-gradient(to right, transparent, #e5e7eb, transparent);
+      margin:4px 0;
+    }
   </style>
-  <!-- ↑↑↑ 絶対に </style> を消さないでください ↑↑↑ -->
 </head>
-
 <body>
-<div id="orientTip" role="status" aria-live="polite">
-  スマホ・タブレットでは <strong>横向き（ランドスケープ）推奨</strong> です。
-  右端が見切れる場合は、画面回転ロックを解除して横向きでご利用ください。
-  <button id="orientDismiss">OK</button>
-</div>
-
   <header>
-    <div class="wrap">
-      <div class="brand">POP自動生成（A5固定・スマホ対応）</div>
-      <div class="tools">
-        <label>テーマ
-          <select id="theme">
-            <option value="lux">高級感</option>
-            <option value="cute">かわいい</option>
-            <option value="fresh">爽やか</option>
-          </select>
-        </label>
-        <label>フォント
-          <select id="font">
-            <option value="gothic">ゴシック</option>
-            <option value="mincho">明朝</option>
-            <option value="hand">手書き</option>
-          </select>
-        </label>
-        <button class="btn" id="swap">写真⇄説明</button>
-        <button class="btn" id="gen">① 候補を3つ生成</button>
-        <button class="btn" id="apply">② 反映</button>
-        <button class="btn" id="png">PNG保存</button>
-        <button class="btn" id="pdf">A5でPDF保存</button>
-        <button class="btn" id="pdfA4x2">A4で2面付けPDF</button>
+    <div class="topbar">
+      <div class="brand">
+        POP自動生成
+        <small>スマホ縦で入力 → 別タブで印刷</small>
+      </div>
+
+      <div class="toolbar">
+        <button class="btn ghost" id="btnSaveTemplate">テンプレ保存</button>
+        <button class="btn ghost" id="btnLoadTemplate">テンプレ読込</button>
+        <button class="btn ghost" id="btnDeleteTemplate">テンプレ削除</button>
+        <button class="btn primary" id="pdfA4x2">プレビューを開く</button>
       </div>
     </div>
   </header>
 
-  <main class="grid">
-    <!-- プレビュー -->
-    <section>
-      <div id="stageWrap">
-        <div id="stage" class="a5">
-          <div class="headline" id="v_headline">キャッチコピーをここに表示</div>
-          <div class="ribbon" id="v_ribbon">おすすめポイントを入力してください</div>
+  <main class="page">
+    <div class="layout">
+      <!-- 左：入力 -->
+      <section class="stack">
+        <div class="card">
+          <h2 class="section-title">基本設定</h2>
 
-          <div id="middle" class="middle">
-            <label class="photo-box" title="クリックで写真を選択">
-              <input id="f_photo" type="file" accept="image/*" style="opacity:0;position:absolute;inset:0;cursor:pointer;">
-              <img id="photoImg" alt="" style="display:none"/>
-            </label>
-            <div class="desc">
-              <div id="v_descTitle" style="font-weight:900;font-size:14pt;margin-bottom:6px">説明タイトルがここに入ります</div>
-              <div id="v_desc">ここに説明文が入ります。生成ボタンで自動作成も可能です。</div>
+          <div class="row">
+            <p>
+              <label for="theme">テーマ</label>
+              <select id="theme">
+                <option value="normal">普通</option>
+                <option value="lux" selected>高級感</option>
+                <option value="pop">ポップ</option>
+              </select>
+            </p>
+
+            <p>
+              <label for="font">フォント</label>
+              <select id="font">
+                <option value="gothic" selected>ゴシック系</option>
+                <option value="mincho">明朝系</option>
+                <option value="round">丸文字系</option>
+              </select>
+            </p>
+          </div>
+
+          <div class="inline-actions">
+            <button class="btn" id="swap">写真と説明を入れ替える</button>
+            <span class="pill">無料版：CSS飾り枠</span>
+            <span class="pill">有料版候補：背景画像対応</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">内容入力</h2>
+
+          <div class="row">
+            <p>
+              <label for="f_name">商品名 / メニュー名</label>
+              <input id="f_name" type="text" placeholder="例：ツヤ恋トリートメント" />
+            </p>
+
+            <p>
+              <label for="f_ribbon">赤帯（おすすめ・今だけ等）</label>
+              <input id="f_ribbon" type="text" placeholder="例：今だけ特別価格 / スタッフおすすめ" />
+            </p>
+          </div>
+
+          <div class="row">
+            <p>
+              <label for="f_feats">特徴ワード <span class="hint">※ カンマ区切りOK</span></label>
+              <input id="f_feats" type="text" placeholder="例：ツヤ, まとまり, 時短" />
+            </p>
+
+            <p>
+              <label for="f_points">説明の要点 <span class="hint">※ 改行 / スラッシュ区切りOK</span></label>
+              <textarea id="f_points" placeholder="例：手触りが変わる / まとまりやすい / 続けやすい"></textarea>
+            </p>
+          </div>
+
+          <p>
+            <label for="f_headline">キャッチコピー（手入力も可）</label>
+            <input id="f_headline" type="text" placeholder="生成候補から選ぶか、手入力してください" />
+          </p>
+
+          <p>
+            <label for="f_descManual">説明文（手入力で上書きしたい時だけ）</label>
+            <textarea id="f_descManual" placeholder="ここに入力すると、生成した説明文よりこちらを優先して表示します"></textarea>
+          </p>
+
+          <p>
+            <label for="f_cta">最後の一言（CTA）</label>
+            <input id="f_cta" type="text" placeholder="例：気になる方はスタッフまで♪" value="ご興味のある方はスタッフまで♪" />
+          </p>
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">価格・写真</h2>
+
+          <div class="row-3">
+            <p>
+              <label for="f_price">定価（円）</label>
+              <input id="f_price" type="number" placeholder="例：5280" />
+            </p>
+            <p>
+              <label for="f_offAmt">割引額（円）</label>
+              <input id="f_offAmt" type="number" placeholder="例：500" />
+            </p>
+            <p>
+              <label for="f_offPct">割引率（%）</label>
+              <input id="f_offPct" type="number" placeholder="例：10" />
+            </p>
+          </div>
+
+          <p>
+            <label for="f_photo">写真を選ぶ</label>
+            <input id="f_photo" type="file" accept="image/*" />
+            <span class="hint">スマホの写真も選べます。写真枠は使わず、角丸で表示します。</span>
+          </p>
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">候補生成</h2>
+          <div class="inline-actions">
+            <button class="btn" id="gen">キャッチコピー候補を3つ出す</button>
+            <button class="btn" id="btnGenLocal">説明文を整える（3案）＋おすすめポイント3つ提案</button>
+            <button class="btn" id="apply">入力内容を反映</button>
+          </div>
+
+          <div class="divider"></div>
+
+          <div>
+            <strong>候補一覧</strong>
+            <div id="aiArea" class="subtext" style="margin-top:8px;">
+              ※ 候補生成ボタンを押すと、ここに選択肢が表示されます
             </div>
           </div>
+        </div>
 
-          <div class="product" id="v_product">メニュー名・商品名がここに入ります</div>
-          <div class="price">
-            <div class="before" id="v_before"></div>
-            <div class="discount" id="v_discountLine"></div>
-            <div class="now" id="v_now"></div>
+        <div class="card">
+          <h2 class="section-title">テンプレ保存</h2>
+
+          <div class="template-row">
+            <select id="templateSelect">
+              <option value="">テンプレを選択</option>
+            </select>
+            <span class="hint">写真は保存せず、文章や設定だけを保存します</span>
           </div>
+        </div>
 
-          <ul class="checklist" id="v_checks">
-            <li>おすすめポイント1</li>
-            <li>おすすめポイント2</li>
-            <li>おすすめポイント3</li>
+        <div class="guide">
+          <h4>設置のコツ（まずは1週間）</h4>
+          <ul>
+            <li>おすすめは <strong>受付</strong>・<strong>鏡横</strong>・<strong>待合</strong> の3か所です。</li>
+            <li>まずは「置く」→「反応を見る」→「言葉を変える」の順で考えてください。</li>
+            <li>価格だけでなく、価値が伝わる言葉を一言入れるのがポイントです。</li>
           </ul>
 
-          <div class="cta"><div class="box">ご興味のある方はスタッフまで♪</div></div>
+          <div class="stand-illu" aria-label="A5スタンドのイメージ">
+            <svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg">
+              <rect x="55" y="18" width="110" height="140" rx="8" fill="#fff" stroke="#d1d5db" stroke-width="3"/>
+              <rect x="68" y="32" width="84" height="18" rx="4" fill="#ffe4e6"/>
+              <rect x="75" y="60" width="70" height="8" rx="4" fill="#cbd5e1"/>
+              <rect x="75" y="76" width="54" height="8" rx="4" fill="#e2e8f0"/>
+              <rect x="75" y="92" width="62" height="8" rx="4" fill="#e2e8f0"/>
+              <path d="M72 158 L148 158 L132 175 L88 175 Z" fill="#cbd5e1"/>
+              <path d="M92 158 L128 158 L118 171 L102 171 Z" fill="#94a3b8"/>
+            </svg>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- 作成画面 -->
-    <aside class="panel" id="editorPanel">
-      <h3>作成画面</h3>
-      <div class="row">
-        <p>
-          <label>商品名 / メニュー名</label>
-          <input id="f_name" type="text" value="" placeholder="例：○○カラー / ○○トリートメント" />
-        </p>
-        <p>
-          <label>赤枠帯（オススメ・残数など）</label>
-          <input id="f_ribbon" type="text" value="" placeholder="例：今だけ特別価格！ / 残りわずか！ など" />
-        </p>
-      </div>
+      <!-- 右：簡易プレビュー -->
+      <aside class="card preview-card">
+        <h2 class="section-title">プレビュー（確認用）</h2>
+        <p class="subtext">ここは確認用です。印刷は「プレビューを開く」から別タブで行います。</p>
 
-      <div class="row">
-        <p>
-          <label>特徴ワード <span class="hint">※ カンマ区切りOK（例：ツヤ, ダメージケア, 時短）</span></label>
-          <input id="f_feats" type="text" value="" placeholder="例：ツヤ, ダメージケア, 時短" />
-        </p>
-        <p>
-          <label>説明の要点（箇条書き可）</label>
-          <textarea id="f_points" rows="3" placeholder="例：色持ちが良い／うるおい持続／時短で仕上がる"></textarea>
-        </p>
-      </div>
+        <div class="stage-wrap">
+          <div id="stage" class="a5 theme-lux">
+            <div class="headline" id="v_headline">キャッチコピーをここに表示</div>
 
-      <div class="row">
-        <p class="full">
-          <label>キャッチコピー（自動生成 or 手動）</label>
-          <input id="f_headline" type="text" placeholder="生成ボタンで自動作成、または手動入力" />
-          <button id="btnGenLocal" class="btn" style="margin-top:6px">キャッチ/説明/チェック候補を3つ生成</button>
-        </p>
-      </div>
+            <div class="ribbon-wrap">
+              <div class="ribbon" id="v_ribbon">おすすめポイントを入力してください</div>
+            </div>
 
-      <div class="row-3">
-        <p>
-          <label>定価（円）</label>
-          <input id="f_price" type="number" value="" placeholder="例：5280" />
-        </p>
-        <p>
-          <label>割引額（円）</label>
-          <input id="f_offAmt" type="number" value="" placeholder="例：528" />
-        </p>
-        <p>
-          <label>割引率（%）<span class="hint">※ 割引額が未入力のとき使用</span></label>
-          <input id="f_offPct" type="number" value="" placeholder="例：10" />
-        </p>
-      </div>
+            <div id="middle" class="middle">
+              <div class="photo-box">
+                <img id="photoImg" alt="">
+              </div>
 
-      <hr style="margin:14px 0;border:none;border-top:1px dashed #e5e7eb">
-      <div>
-        <strong>AI候補</strong>
-        <div id="aiArea" class="hint" style="margin-top:6px">※ 生成ボタンでここに候補が出ます</div>
-      </div>
-    </aside>
+              <div class="desc">
+                <div id="v_descTitle">説明タイトルがここに入ります</div>
+                <div id="v_desc">ここに説明文が入ります。</div>
+              </div>
+            </div>
+
+            <div class="product" id="v_product">メニュー名・商品名がここに入ります</div>
+
+            <div class="price">
+              <div class="before" id="v_before"></div>
+              <div class="discount" id="v_discountLine"></div>
+              <div class="now" id="v_now"></div>
+            </div>
+
+            <ul class="checklist" id="v_checks">
+              <li>おすすめポイント1</li>
+              <li>おすすめポイント2</li>
+              <li>おすすめポイント3</li>
+            </ul>
+
+            <div class="cta">
+              <div class="box">ご興味のある方はスタッフまで♪</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
   </main>
 
-  <!-- ライブラリ -->
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-
-  <script>
-    const $ = (q)=>document.querySelector(q);
-
-    /* ===== テーマ/フォント ===== */
-    function applyTheme(v){
-      const frame = { lux:'#d4af37', cute:'#ff86b3', fresh:'#34d399' }[v] || '#d4af37';
-      $('#stage').style.border = '8px solid '+frame;
-    }
-    function applyFont(v){
-      const fam = {
-        gothic:"'Noto Sans JP',sans-serif",
-        mincho:"'Shippori Mincho','Noto Sans JP',serif",
-        hand:"'Kosugi Maru','Noto Sans JP',sans-serif"
-      }[v];
-      $('#stage').style.fontFamily = fam;
-    }
-    $('#theme').addEventListener('change', e=>applyTheme(e.target.value));
-    $('#font').addEventListener('change',  e=>applyFont(e.target.value));
-    applyTheme('lux'); applyFont('gothic');
-
-    /* ===== 写真⇄説明の左右入替 ===== */
-    $('#swap').addEventListener('click', ()=> $('#middle').classList.toggle('reverse'));
-
-    /* ===== 画像アップロード ===== */
-    function handleImage(file){
-      if(!file) return;
-      const r=new FileReader();
-      r.onload=e=>{
-        $('#photoImg').src=e.target.result;
-        $('#photoImg').style.display='block';
-      };
-      r.readAsDataURL(file);
-    }
-    $('#f_photo').addEventListener('change', e=>handleImage(e.target.files[0]));
-
-    /* ===== ローカルAI風 3候補生成 ===== */
-    function genCatch(name, feats){
-      const ks=(feats||'').split(/[,、\n\s]+/).filter(Boolean);
-      const p=(a)=>a[Math.floor(Math.random()*a.length)];
-      const t1=[`本日だけ、${name}を特別価格で`,`スタッフおすすめ！${name}で変わる毎日`,`リピーター続出の${name}`];
-      const t2=[`${(ks[0]||'高保湿')}×${(ks[1]||'ツヤ')}のW実感`,`${(ks[0]||'時短')}で全身ケア`,`${(ks[0]||'サロン級')}の仕上がりを自宅で`];
-      return [ `${p(t1)}` , `${name}──${p(t2)}` , `${p(t2)}。今だけ体験を。` ];
-    }
-    function genDesc(name, points){
-      const ps=(points||'').split(/[\/\n、・]+/).filter(Boolean);
-      const P=(arr)=>arr.join('・');
-      const base=ps.length?P(ps.slice(0,3))+'。':'使うほどに、うるおいとまとまりを実感。';
-      return [
-        `${name}は、${base}毎日のケアが簡単になります。`,
-        `これ1本で${base} 忙しい日でも手軽に全身ケア。`,
-        `${base} 家族みんなで使える万能アイテムです。`
-      ];
-    }
-    function genChecks(){
-      return [
-        ['奇跡の実感。お肌にも髪にもおすすめ。','保湿とツヤのWケア。','毎日続けやすい簡単ケア。'],
-        ['サロン級の仕上がりをご自宅で。','使うほどに指通りなめらか。','家族で使える万能アイテム。'],
-        ['忙しい朝でもワンプッシュ。','全身に使えてコスパ◎','リピーター多数の人気メニュー。']
-      ];
-    }
-    function renderOptions(){
-      const name = $('#f_name').value.trim()||'新メニュー';
-      const feats= $('#f_feats').value.trim();
-      const points=$('#f_points').value.trim();
-
-      const cCatch = genCatch(name,feats);
-      const cDesc  = genDesc(name,points);
-      const cChecks= genChecks();
-
-      let html='';
-      html += '<div style="margin:8px 0">【キャッチコピー候補】</div>';
-      cCatch.forEach((t,i)=> html+=`<label style="display:block;margin-bottom:6px"><input type=radio name=optCatch value=${i} ${i===0?'checked':''}> ${t}</label>`);
-      html += '<div style="margin:10px 0 6px">【説明文候補】</div>';
-      cDesc.forEach((t,i)=> html+=`<label style="display:block;margin-bottom:6px"><input type="radio" name="optDesc" value="${i}" ${i===0?'checked':''}> ${t}</label>`);
-      html += '<div style="margin:10px 0 6px">【チェックリスト候補】</div>';
-      cChecks.forEach((arr,i)=> html+=`<label style="display:block;margin-bottom:6px"><input type=radio name=optChecks value=${i} ${i===0?'checked':''}> ${arr.join(' ／ ')}</label>`);
-
-      $('#aiArea').innerHTML = html;
-      $('#aiArea').dataset.catch = JSON.stringify(cCatch);
-      $('#aiArea').dataset.desc  = JSON.stringify(cDesc);
-      $('#aiArea').dataset.checks= JSON.stringify(cChecks);
-      $('#f_headline').value = cCatch[0];
-    }
-
-    /* ===== 反映 ===== */
-    function yen(n){return '¥'+Number(n).toLocaleString()}
-    function applyAll(){
-      const name=$('#f_name').value.trim()||'メニュー名';
-      const ribbon=$('#f_ribbon').value.trim();
-
-      const dsCatch=JSON.parse($('#aiArea').dataset.catch||'[]');
-      const selCatch=document.querySelector('input[name="optCatch"]:checked');
-      const catchText=(selCatch? dsCatch[Number(selCatch.value)] : $('#f_headline').value.trim())||$('#f_headline').value.trim();
-      $('#v_headline').textContent = catchText || 'キャッチコピーをここに表示';
-      $('#v_ribbon').textContent = ribbon || 'おすすめです';
-
-      const feats=$('#f_feats').value.trim();
-      const title=feats? `「${feats.split(/[,、\s]+/).slice(0,2).join('」×「')}」がたっぷり入った${name}` : name;
-      $('#v_descTitle').textContent=title;
-
-      const dsDesc=JSON.parse($('#aiArea').dataset.desc||'[]');
-      const selDesc=document.querySelector('input[name="optDesc"]:checked');
-      const descText=(selDesc? dsDesc[Number(selDesc.value)] : $('#f_points').value.trim());
-      $('#v_desc').textContent=descText||' ';
-
-      $('#v_product').textContent=name;
-
-      const price=Number($('#f_price').value||0);
-      const offAmtInput=$('#f_offAmt').value; const offPctInput=$('#f_offPct').value;
-      let offAmt=Number(offAmtInput||0); if(!offAmt && offPctInput){offAmt=Math.round(price*Number(offPctInput)/100)}
-      const now=Math.max(price-offAmt,0);
-      $('#v_before').textContent= price? `通常価格 ${yen(price)}` : '';
-      $('#v_discountLine').textContent= offAmt? `今だけ！${yen(offAmt)}OFF` : (offPctInput?`今だけ！${offPctInput}%OFF`:' ');
-      $('#v_now').textContent = now? `${yen(now)}（税込）` : '';
-
-      const dsChecks=JSON.parse($('#aiArea').dataset.checks||'[]');
-      const selChecks=document.querySelector('input[name="optChecks"]:checked');
-      const list= selChecks? dsChecks[Number(selChecks.value)] : ['おすすめポイント1','おすすめポイント2','おすすめポイント3'];
-      $('#v_checks').innerHTML=list.map(t=>`<li>${t}</li>`).join('');
-    }
-
-    /* ===== 保存（PNG / A5 PDF / A4二面PDF） ===== */
-    async function savePNG(){
-      const el=$('#stage');
-      const canvas=await html2canvas(el,{scale:2,backgroundColor:'#ffffff'});
-      const url=canvas.toDataURL('image/png');
-      const a=document.createElement('a'); a.download='POP_A5.png'; a.href=url; a.target='_blank'; a.click();
-    }
-    async function savePDF(){
-      const el=$('#stage');
-      const canvas=await html2canvas(el,{scale:2,backgroundColor:'#ffffff'});
-      const img=canvas.toDataURL('image/jpeg',0.95);
-      const { jsPDF } = window.jspdf; const pdf=new jsPDF({orientation:'p',unit:'mm',format:'a5'});
-      const w=pdf.internal.pageSize.getWidth(), h=pdf.internal.pageSize.getHeight();
-      pdf.addImage(img,'JPEG',0,0,w,h); pdf.save('POP_A5.pdf');
-    }
-    async function savePDF_A4x2(){
-      const el = $('#stage');
-      const canvas = await html2canvas(el, { scale: 2, backgroundColor: '#ffffff' });
-      const img = canvas.toDataURL('image/jpeg', 0.95);
-
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ orientation: 'l', unit: 'mm', format: 'a4' }); // A4横
-      const pageW = pdf.internal.pageSize.getWidth();   // 297
-      const pageH = pdf.internal.pageSize.getHeight();  // 210
-
-      const targetW = 140;                               // A5幅よりわずかに小さめ
-      const targetH = targetW * (210/148);               // 比率維持
-      const marginX = 8;
-      const gutter  = 6;
-      const x1 = marginX;
-      const x2 = marginX + targetW + gutter;
-      const y  = (pageH - targetH) / 2;
-
-      pdf.addImage(img, 'JPEG', x1, y, targetW, targetH);
-      pdf.addImage(img, 'JPEG', x2, y, targetW, targetH);
-      pdf.save('POP_A4_2up.pdf');
-    }
-
-    /* ===== バインド ===== */
-    $('#gen').addEventListener('click', renderOptions);
-    $('#btnGenLocal').addEventListener('click', renderOptions);
-    $('#apply').addEventListener('click', applyAll);
-    $('#png').addEventListener('click', savePNG);
-    $('#pdf').addEventListener('click', savePDF);
-    $('#pdfA4x2').addEventListener('click', savePDF_A4x2);
-  </script>
-<script>
-  // 縦向きのときだけバナー表示（OKで当面非表示）
-  (function(){
-    const bar   = document.getElementById('orientTip');
-    const btn   = document.getElementById('orientDismiss');
-    const key   = 'orient_tip_dismissed';
-
-    function isPortrait(){
-      // iPhone Chrome/Safari でも安定する判定
-      return window.matchMedia('(orientation: portrait)').matches;
-    }
-    function update(){
-      if(localStorage.getItem(key)==='1'){ bar.style.display='none'; return; }
-      bar.style.display = isPortrait() ? 'block' : 'none';
-    }
-    window.addEventListener('orientationchange', update);
-    window.addEventListener('resize', update);
-    window.addEventListener('load', update);
-    btn.addEventListener('click', ()=>{ localStorage.setItem(key,'1'); update(); });
-  })();
-</script>
-
+  <script src="./app.js"></script>
 </body>
 </html>
