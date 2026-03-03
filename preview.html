@@ -17,7 +17,7 @@
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family:'Noto Sans JP',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      font-family:'Noto Sans JP',system-ui,sans-serif;
       background:var(--bg);
       color:var(--text);
     }
@@ -38,23 +38,17 @@
       justify-content:space-between;
       flex-wrap:wrap;
     }
-    .brand{
-      font-weight:900;
-      font-size:15px;
-    }
-    .tools{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
+    .brand{font-weight:900;font-size:15px}
+    .tools{display:flex;gap:8px;flex-wrap:wrap}
     .btn{
       padding:10px 14px;
-      border-radius:10px;
+      border-radius:12px;
       border:1px solid var(--line);
       background:#fff;
-      font-weight:700;
+      font-weight:800;
       cursor:pointer;
     }
+    .btn:active{transform:translateY(1px)}
     .btn.primary{
       background:#111827;
       color:#fff;
@@ -100,44 +94,10 @@
       display:flex;
       flex-direction:column;
       padding:8mm;
-    }
-
-    /* 通常テーマ */
-    .theme-normal{
       border:4px solid #d1d5db;
-      border-radius:10px;
+      border-radius:12px;
     }
 
-    /* 高級感 */
-    .theme-lux{
-      border:6px solid #d4af37;
-      border-radius:8px;
-      box-shadow:inset 0 0 0 2px rgba(212,175,55,.35);
-    }
-    .theme-lux::before,
-    .theme-lux::after{
-      content:"";
-      position:absolute;
-      width:16px; height:16px;
-      border:2px solid #d4af37;
-    }
-    .theme-lux::before{
-      top:6px; left:6px;
-      border-right:none; border-bottom:none;
-    }
-    .theme-lux::after{
-      right:6px; bottom:6px;
-      border-left:none; border-top:none;
-    }
-
-    /* ポップ */
-    .theme-pop{
-      border:6px solid #fb7185;
-      border-radius:18px;
-      box-shadow:inset 0 0 0 3px #ffd1dc;
-    }
-
-    /* フォント */
     .font-gothic{ font-family:'Noto Sans JP',sans-serif; }
     .font-mincho{ font-family:'Shippori Mincho','Noto Sans JP',serif; }
     .font-round{ font-family:'Kosugi Maru','Noto Sans JP',sans-serif; }
@@ -148,6 +108,7 @@
       font-weight:900;
       line-height:1.35;
       margin:0 0 4mm;
+      word-break:break-word;
     }
 
     .ribbon-wrap{
@@ -174,9 +135,6 @@
       margin-bottom:5mm;
       align-items:flex-start;
     }
-    .middle.reverse{
-      flex-direction:row-reverse;
-    }
 
     .photo-box{
       width:50%;
@@ -197,6 +155,7 @@
       width:50%;
       font-size:10.5pt;
       line-height:1.75;
+      word-break:break-word;
     }
     .desc-title{
       font-weight:900;
@@ -211,6 +170,7 @@
       font-weight:900;
       line-height:1.4;
       margin:3mm 0 2mm;
+      word-break:break-word;
     }
 
     .price{
@@ -246,6 +206,7 @@
       position:relative;
       padding-left:18px;
       margin:2px 0;
+      word-break:break-word;
     }
     .checklist li::before{
       content:'✔';
@@ -346,19 +307,18 @@
 
   <main class="page">
     <div class="note">
-      この画面は印刷専用です。A4横で、同じPOPを2枚並べて出力します。<br>
-      スマホでも確認できますが、印刷はPCからの操作がおすすめです。
+      この画面は印刷専用です。A4横で、同じPOPを2枚並べて出力します。
     </div>
 
     <section class="sheet">
-      <article class="pop theme-lux font-gothic" id="pop1">
+      <article class="pop font-gothic" id="pop1">
         <div class="headline js-headline">キャッチコピーがここに入ります</div>
 
         <div class="ribbon-wrap">
           <div class="ribbon js-ribbon">おすすめポイント</div>
         </div>
 
-        <div class="middle" id="middle1">
+        <div class="middle">
           <div class="photo-box">
             <img class="js-photo" alt="">
           </div>
@@ -376,10 +336,10 @@
           <div class="now js-now"></div>
         </div>
 
-        <ul class="checklist js-checks">
-          <li>おすすめポイント1</li>
-          <li>おすすめポイント2</li>
-          <li>おすすめポイント3</li>
+        <ul class="checklist">
+          <li class="js-check1">おすすめポイント1</li>
+          <li class="js-check2">おすすめポイント2</li>
+          <li class="js-check3">おすすめポイント3</li>
         </ul>
 
         <div class="cta">
@@ -389,14 +349,14 @@
         <div class="cutline"></div>
       </article>
 
-      <article class="pop theme-lux font-gothic" id="pop2">
+      <article class="pop font-gothic" id="pop2">
         <div class="headline js-headline">キャッチコピーがここに入ります</div>
 
         <div class="ribbon-wrap">
           <div class="ribbon js-ribbon">おすすめポイント</div>
         </div>
 
-        <div class="middle" id="middle2">
+        <div class="middle">
           <div class="photo-box">
             <img class="js-photo" alt="">
           </div>
@@ -414,10 +374,10 @@
           <div class="now js-now"></div>
         </div>
 
-        <ul class="checklist js-checks">
-          <li>おすすめポイント1</li>
-          <li>おすすめポイント2</li>
-          <li>おすすめポイント3</li>
+        <ul class="checklist">
+          <li class="js-check1">おすすめポイント1</li>
+          <li class="js-check2">おすすめポイント2</li>
+          <li class="js-check3">おすすめポイント3</li>
         </ul>
 
         <div class="cta">
